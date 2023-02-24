@@ -20,37 +20,35 @@ fn construct_board(pieces: &str) -> Vec<Vec<char>> {
 	// splits up the pieces into their own ranks
 	let ranks: Vec<&str> = pieces.split("/").collect();
 	// generates empty final board
-	let mut final_board = vec![];
+	let mut final_board = Vec::new();
 	
+	// loop through ranks
 	for (index, rank) in ranks.iter().enumerate() {
-		let mut new_rank = vec![];
+		let mut new_rank = Vec::new();
+		// loop through files
 		for file in rank.chars() {
-			new_rank.push(get_new_file(file))
+			let mut new_file = get_new_file(file);
+			new_rank.append(&mut new_file);
 		}
 		final_board.push(new_rank);
 	}
-
+	
 	return final_board;
 }
 
 fn get_new_file(file: char) -> Vec<char> {
-	let mut new_file = vec![];
+	let mut new_file = Vec::new();
 
 	if file.is_numeric() {
-		println!("TRUE! {}", file);
-		let empty_square_num: i32 = file.parse().unwrap();
+		let empty_square_num: i32 = file.to_string().parse().unwrap();
 		for _ in 0..empty_square_num {
 			new_file.push('_');
 		}
 	} else {
-		new_file.push(&file[..]);
+		new_file.push(file);
 	}
 
 	return new_file
-}
-
-fn convert_active_player(player: &str) -> Player {
-	return if player == "w" {Player::White} else {Player::Black};
 }
 
 fn deconstruct_fen(fen: &str) {
@@ -59,29 +57,26 @@ fn deconstruct_fen(fen: &str) {
 	
 	let mut boardstate = BoardState {
 		board_state: construct_board(deconstructed_fen[0]),
-		active_player: convert_active_player(deconstructed_fen[1]),
+		active_player: if deconstructed_fen[1] == "w" {Player::White} else {Player::Black},
 		castle_rights: deconstructed_fen[2],
 		enpassant_square: deconstructed_fen[3],
 	};
+	println!("{:?}", boardstate);
 }
 
-fn remove_turns_fen(fen: &str) -> String {
-	let deconstructed_fen: Vec<&str> = fen.split_whitespace().collect();
-	let removed_turns: String = deconstructed_fen.concat();
-	return removed_turns
-}
 
 fn main() {
-	// 8/3Pp3/p7/5k1r/BP6/B2pK2p/1p2npP1/1R6 w - - 0 1
 
+	// User FEN input
 	// print!("Enter an fen: ");
 	// let input_fen: String = read!("{}\n");
 	// let fen = &input_fen[..];
-	let mut fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-	print!("{}", fen);
-	let big_fen = remove_turns_fen(fen);
-	let str_fen = &big_fen[..];
-	print!("{}", str_fen);
-	// deconstruct_fen(fen);
+
+	let mut fen: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+	//strips turn info from the FEN
+	fen = &fen[..(fen.len() - 4)];
+
+	deconstruct_fen(fen);
 	
 }
