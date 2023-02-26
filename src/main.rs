@@ -1,7 +1,8 @@
 // use text_io::read;
 mod config;
-mod fen_deconstruct;
-mod fen_construct;
+mod fen;
+use fen::fen_construct::fen_construct;
+use fen::fen_deconstruct::fen_deconstruct;
 
 fn main() {
 	// User FEN input
@@ -17,13 +18,13 @@ fn main() {
 	let turn_info = &fen[fen.len() - 3..fen.len()];
 	fen = &fen[..(fen.len() - 4)];
 
-	// let mut board: config::BoardState = fen_deconstruct::fen_deconstruct(fen);
+	let mut board: config::BoardState = fen_deconstruct(fen);
 
-	// let construct_fen = fen_construct::fen_construct(board, turn_info);
+	let construct_fen = fen_construct(board, turn_info);
 
-	for _ in 0..RANGE {
-		let test_board = fen_deconstruct::fen_deconstruct(fen);
-		let construct_board = fen_construct::fen_construct(test_board, turn_info);
-	}	
-	println!("Done!")
+	// for _ in 0..RANGE {
+	// 	let test_board = fen_deconstruct::fen_deconstruct(fen);
+	// 	let construct_board = fen_construct::fen_construct(test_board, turn_info);
+	// }	
+	println!("Done!");
 }

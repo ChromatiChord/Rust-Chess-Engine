@@ -11,7 +11,7 @@ pub fn fen_deconstruct(fen: &str) -> config::BoardState {
 		enpassant_square: deconstructed_fen[3],
 	};
 	// println!("{:?}", boardstate);
-    
+
     boardstate
 }
 
@@ -37,6 +37,8 @@ pub fn construct_board(pieces: &str) -> Vec<Vec<char>> {
 	final_board
 }
 
+// required for parsing values such as '5' (5 empty spaces in a row)
+// otherwise just returns the piece value itself
 fn get_new_file(file: char) -> Vec<char> {
 	let mut new_file = Vec::new();
 
