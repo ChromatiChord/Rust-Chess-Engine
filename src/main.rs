@@ -4,6 +4,9 @@ mod fen;
 use fen::fen_construct::fen_construct;
 use fen::fen_deconstruct::fen_deconstruct;
 
+mod piece_movement;
+use piece_movement::piece_movement_brains::get_available_moves;
+
 fn main() {
 	// User FEN input
 	// print!("Enter an fen: ");
@@ -26,5 +29,10 @@ fn main() {
 	// 	let test_board = fen_deconstruct::fen_deconstruct(fen);
 	// 	let construct_board = fen_construct::fen_construct(test_board, turn_info);
 	// }	
+	let one = vec![vec![]];
+	let two = vec![vec![]];
+
+	get_available_moves('b', one);
+	get_available_moves('k', two);
 	println!("Done!");
 }
