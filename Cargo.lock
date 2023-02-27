@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "fen"
+name = "rustyengine"
 version = "0.1.0"
 dependencies = [
  "text_io",

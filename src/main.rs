@@ -14,7 +14,7 @@ fn main() {
 	// let input_fen: String = read!("{}\n");
 	// let fen = &input_fen[..];
 
-	let _range = 5_0;
+	let budget = 5_000_000;
 
 	let mut fen: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -25,10 +25,16 @@ fn main() {
 	let board: config::BoardState = fen_deconstruct(fen);
 
   let _construct_fen = fen_construct(board, turn_info);
-	let one: Vec<(i32, i32)> = vec![(1,1)];
-	let two: Vec<(i32, i32)> = vec![(1,1)];
+	let selflist: Vec<(i8, i8)> = vec![(1,1), (7,7)];
+	let enemylist: Vec<(i8, i8)> = vec![(2,6), (2,2)];
 
-	get_available_moves('b', one.clone(), two.clone());
-	get_available_moves('k', one, two);
-	println!("Done!");
+	// let squares = get_available_moves('b', (4,4), selflist.clone(), enemylist.clone());
+	// get_available_moves('r', (1,1), one, two);
+
+	// print!("{:?}", squares);
+	
+	for _ in 0..budget {
+		get_available_moves('b', (4,4), selflist.clone(), enemylist.clone());
+	}
+	print!("Done!")
 }
