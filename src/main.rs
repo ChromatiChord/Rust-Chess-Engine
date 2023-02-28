@@ -22,6 +22,8 @@ fn main() {
 	let turn_info = &fen[fen.len() - 3..fen.len()];
 	fen = &fen[..(fen.len() - 4)];
 
+	fen_deconstruct(fen);
+
 	let selflist: Vec<(i8, i8)> = vec![(5, 6)];
 	let enemylist: Vec<(i8, i8)> = vec![(4, 4)];
 	

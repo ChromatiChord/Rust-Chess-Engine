@@ -11,8 +11,8 @@ active_player: Player) -> Vec<(i8, i8)> {
     
     // check which rank the pawn is allowed to dash on
     let double_rank = match active_player {
-        White => 2,
-        Black => 7
+        White => 1,
+        Black => 6
     };
     // check which direction the pawn is meant to be moving
     let direction = match active_player {
