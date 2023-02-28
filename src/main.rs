@@ -22,19 +22,18 @@ fn main() {
 	let turn_info = &fen[fen.len() - 3..fen.len()];
 	fen = &fen[..(fen.len() - 4)];
 
-	let board: config::BoardState = fen_deconstruct(fen);
-
-  let _construct_fen = fen_construct(board, turn_info);
-	let selflist: Vec<(i8, i8)> = vec![(1,1), (7,7)];
-	let enemylist: Vec<(i8, i8)> = vec![(2,6), (2,2)];
-
-	// let squares = get_available_moves('b', (4,4), selflist.clone(), enemylist.clone());
+	let selflist: Vec<(i8, i8)> = vec![(5, 6)];
+	let enemylist: Vec<(i8, i8)> = vec![(4, 4)];
+	
+	let squares = get_available_moves('b', (4,4), selflist.clone(), enemylist.clone(), (2, 4));
+	let squares = get_available_moves('P', (2,4), selflist.clone(), enemylist.clone(), (2, 4));
+	println!("{:?}", squares); 
 	// get_available_moves('r', (1,1), one, two);
 
 	// print!("{:?}", squares);
 	
-	for _ in 0..budget {
-		get_available_moves('b', (4,4), selflist.clone(), enemylist.clone());
-	}
-	print!("Done!")
+	// for _ in 0..budget {
+	// 	get_available_moves('b', (4,4), selflist.clone(), enemylist.clone(), (2, 4));
+	// }
+	println!("Done!")
 }

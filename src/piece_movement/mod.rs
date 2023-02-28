@@ -5,3 +5,4 @@ pub mod knight_movement;
 pub mod king_movement;
 pub mod queen_movement;
 pub mod pawn_movement;
+pub mod out_of_bounds;

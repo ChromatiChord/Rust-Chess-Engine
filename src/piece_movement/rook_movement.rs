@@ -1,4 +1,4 @@
-use super::in_bounds::in_bounds;
+use super::out_of_bounds::out_of_bounds;
 
 pub fn get_rook_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) ->
 Vec<(i8, i8)> {
@@ -24,7 +24,7 @@ Vec<(i8, i8)> {
 
             let coordinates = (rank, file);
             // checks if values are out of bounds, or if it's occupied by own pieces
-            if in_bounds(rank, file) || occupied_self.contains(&coordinates) {
+            if out_of_bounds(rank, file) || occupied_self.contains(&coordinates) {
                 stop = true;
             } else if occupied_enemy.contains(&coordinates) {
                 possible_squares.push(coordinates);
