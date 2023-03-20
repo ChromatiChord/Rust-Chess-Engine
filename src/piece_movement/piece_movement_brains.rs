@@ -17,7 +17,7 @@ pub fn get_available_moves(
     coords: &(i8, i8), 
     occupied_white: &Vec<(i8, i8)>, 
     occupied_black: &Vec<(i8, i8)>, 
-    enpassant_square: (i8, i8)) -> Vec<(i8, i8)> {
+    enpassant_square: Option<(i8, i8)>) -> Vec<(i8, i8)> {
         let occupied_self = match active_player {
             White => occupied_white.clone(),
             Black => occupied_black.clone()

@@ -5,7 +5,7 @@ use crate::config::Player::Black;
 pub fn get_pawn_moves(square: (i8, i8), 
 occupied_self: Vec<(i8, i8)>, 
 occupied_enemy: Vec<(i8, i8)>, 
-enpassant_sqaure: (i8, i8), 
+enpassant_sqaure: Option<(i8, i8)>, 
 active_player: Player) -> Vec<(i8, i8)> {
     let mut possible_squares: Vec<(i8, i8)> = Vec::new();
     
@@ -38,13 +38,20 @@ active_player: Player) -> Vec<(i8, i8)> {
         }
     }
 
+
     // en passant check
-    if enpassant_sqaure ==  (square.0 + direction, square.1 + 1) {
-        possible_squares.push((square.0 + direction, square.1 + 1));
+    match enpassant_sqaure {
+        Some(en_square) => {
+            if en_square ==  (square.0 + direction, square.1 + 1) {
+                possible_squares.push((square.0 + direction, square.1 + 1));
+            }
+            if en_square ==  (square.0 + direction, square.1 - 1)  {
+                possible_squares.push((square.0 + direction, square.1 - 1));
+            }
+        },
+        None => ()
     }
-    if enpassant_sqaure ==  (square.0 + direction, square.1 - 1)  {
-        possible_squares.push((square.0 + direction, square.1 - 1));
-    }
+    
     
     possible_squares
 }
