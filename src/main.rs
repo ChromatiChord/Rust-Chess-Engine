@@ -7,6 +7,7 @@ use fen::fen_deconstruct::fen_deconstruct;
 mod piece_movement;
 use piece_movement::piece_movement_brains::get_available_moves;
 
+mod evaluation;
 
 fn main() {
 	// User FEN input
@@ -22,20 +23,19 @@ fn main() {
 	let turn_info = &fen[fen.len() - 3..fen.len()];
 	fen = &fen[..(fen.len() - 4)];
 
-	fen_deconstruct(fen);
+	let board = fen_deconstruct(fen);
 
-	let selflist: Vec<(i8, i8)> = vec![(5, 6)];
-	let enemylist: Vec<(i8, i8)> = vec![(4, 4)];
+	let debug_selflist: Vec<(i8, i8)> = vec![(4, 4)];
+	let debug_enemylist: Vec<(i8, i8)> = vec![(2, 0)];
 	
-	let squares = get_available_moves('b', (4,4), selflist.clone(), enemylist.clone(), (2, 4));
-	let squares = get_available_moves('P', (2,4), selflist.clone(), enemylist.clone(), (2, 4));
-	println!("{:?}", squares); 
-	// get_available_moves('r', (1,1), one, two);
+	for i in 1..1_000_000{
+		for piece in &board.white_pieces {
+			get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, (8, 8));
+		}
+	}
+	
+	//  args: ( piece, player, piece_coords, occ_white, occ_black, enpassant_square )
+	// let squares = get_available_moves(config::Piece::Knight, config::Player::White, (1,2), debug_selflist, debug_enemylist, (8, 8));
 
-	// print!("{:?}", squares);
-	
-	// for _ in 0..budget {
-	// 	get_available_moves('b', (4,4), selflist.clone(), enemylist.clone(), (2, 4));
-	// }
 	println!("Done!")
 }

@@ -1,4 +1,13 @@
 use crate::config;
+use config::Piece;
+use config::Player;
+use config::PieceInfo;
+
+use crate::piece_movement;
+use piece_movement::piece_movement_brains;
+
+use crate::evaluation;
+use evaluation::piece_valuation::get_piece_value;
 
 pub fn fen_deconstruct(fen: &str) -> config::BoardState {
 	// deconstruct FEN into major components
@@ -6,62 +15,90 @@ pub fn fen_deconstruct(fen: &str) -> config::BoardState {
 	let constructed_board_info = construct_board(deconstructed_fen[0]);
 
 	let boardstate = config::BoardState {
-		board_state: constructed_board_info.0,
-		occupied_white: constructed_board_info.1,
-		occupied_black: constructed_board_info.2,
-		active_player: if deconstructed_fen[1] == "w" {config::Player::White} else {config::Player::Black},
+		white_pieces: constructed_board_info.0,
+		black_pieces: constructed_board_info.1,
+		occupied_white: constructed_board_info.2,
+		occupied_black: constructed_board_info.3,
+		active_player: if deconstructed_fen[1] == "w" {Player::White} else {Player::Black},
 		castle_rights: deconstructed_fen[2],
 		enpassant_square: deconstructed_fen[3],
 	};
 	// println!("{:?}", boardstate);
-	println!("asdsa");
-	println!("{:?}", boardstate);
-	println!("asds");
 	
     boardstate
 }
 
 // takes in the pieces from FEN and gives back a board state
 // for use in the final boardstate object
-pub fn construct_board(pieces: &str) -> ( Vec<Vec<char>>, Vec<(i8, i8)>, Vec<(i8, i8)> ) {
+pub fn construct_board(pieces: &str) -> ( Vec<PieceInfo>, Vec<PieceInfo>, Vec<(i8, i8)>, Vec<(i8, i8)> ) {
 	// splits up the pieces into their own ranks
 	let ranks: Vec<&str> = pieces.split("/").collect();
 	// generates empty final board
-	let mut final_board = Vec::new();
+	let mut white_pieces = Vec::new();
+	let mut black_pieces = Vec::new();
+
 	let mut occupied_white = Vec::new();
 	let mut occupied_black = Vec::new();
 	
 	// loop through ranks
 	for (rank_iter, rank) in ranks.iter().enumerate() {
-		let mut new_rank = Vec::new();
 		// loop through files
 		for (file_iter, file) in rank.chars().enumerate() {
-			let mut new_file = get_new_file(file, rank_iter as i8, file_iter as i8);
-			match new_file.1 {
-				Some(x) => if new_file.0[0].is_uppercase() {occupied_white.push(x)} else {occupied_black.push(x)},
+			let mut piece_at_pos_result = get_piece_at_pos(file, rank_iter as i8, file_iter as i8);
+
+			match piece_at_pos_result {
+				Some(new_piece) => {
+					match new_piece.owner {
+						Player::White => { 
+							white_pieces.push(new_piece.clone());
+							occupied_white.push(new_piece.square);
+						}
+						Player::Black => {
+							black_pieces.push(new_piece.clone());
+							occupied_black.push(new_piece.square.clone());
+						}
+					};
+				},
 				None => ()
 			}
-			new_rank.append(&mut new_file.0);
+
 		}
-		final_board.push(new_rank);
 	}
 	
-	( final_board, occupied_white, occupied_black )
+	( white_pieces, black_pieces, occupied_white, occupied_black )
 }
 
 // required for parsing values such as '5' (5 empty spaces in a row)
-// otherwise just returns the piece value itself
-fn get_new_file(file: char, rank_iter: i8, file_iter: i8) -> ( Vec<char>, Option<(i8, i8)> ) {
-	let mut new_file = Vec::new();
-
-	if file.is_numeric() {
-		let empty_square_num: i32 = file.to_string().parse().unwrap();
-		for _ in 0..empty_square_num {
-			new_file.push('_');
-		}
-		return (new_file, None);
-	} else {
-		new_file.push(file);
-		return (new_file, Some((rank_iter, file_iter)));
+// if a piece is detected, return details just returns the piece value itself
+fn get_piece_at_pos(piece: char, rank_iter: i8, file_iter: i8) -> Option<PieceInfo> {
+	
+	if piece.is_numeric() {
+		return None;
 	}
+
+	let piece_owner = if piece.is_uppercase() {Player::White} else {Player::Black};
+
+	let piece_type_lowered = piece.to_lowercase().next().unwrap();
+	// println!("{:?}", piece_type_lowered);
+
+	let piece_type = match piece_type_lowered {
+		'k' => Piece::King,
+		'q' => Piece::Queen,
+		'r' => Piece::Rook,
+		'n' => Piece::Knight,
+		'b' => Piece::Bishop,
+		'p' => Piece::Pawn,
+		 _  => panic!("Inputted piece is not a real piece! Piece: {:?}", piece_type_lowered)
+	};
+
+	let piece_square = (rank_iter, file_iter);
+
+	let mut piece_info = PieceInfo {
+		piece_type: piece_type.clone(),
+		square: piece_square,
+		piece_value: get_piece_value(piece_type.clone(), piece_square),
+		owner: piece_owner
+	};
+	
+	return Some(piece_info);
 }
