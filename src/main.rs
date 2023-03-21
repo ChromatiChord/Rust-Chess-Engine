@@ -1,3 +1,5 @@
+#![allow(dead_code, unused)]
+
 // use text_io::read;
 mod config;
 mod fen;
@@ -17,7 +19,7 @@ fn main() {
 
 	let budget = 5_000_000;
 
-	let mut fen: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1";
+	let mut fen: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - e3 0 1";
 
 	//strips turn info and repeat count from the FEN
 	let turn_info = &fen[fen.len() - 3..fen.len()];
@@ -31,9 +33,9 @@ fn main() {
 	// for i in 1..1_0{
 	// }
 	
-	// for piece in &board.white_pieces {
-	// 	println!("{:?} {:?}: {:?}", piece.owner, piece.piece_type, get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, Some((8, 8)), &"right"));
-	// }
+	for piece in &board.white_pieces {
+		println!("{:?} {:?}: {:?}", piece.owner, piece.piece_type, get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, board.enpassant_square, &"right"));
+	}
 
 	// println!("{:?} {:?}: {:?}", config::Player::White, config::Piece::Rook, get_available_moves(&config::Piece::Rook, &config::Player::White, &(1,2), &debug_selflist, &debug_enemylist, Some((8, 8))));
 

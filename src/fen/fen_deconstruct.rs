@@ -138,14 +138,13 @@ fn analyse_castle_rights(rights: &str) -> CastleRights {
 	return_rights
 }
 
-// takes a enpasssant square string such as "d4",
-// and converts to coords: (3, 3)
-fn enpassant_deconstruct(square: &str) -> (i8, i8) {
+// takes a enpasssant square string such as "e3",
+// and converts to coords: (5, 4)
+fn enpassant_deconstruct(square: &str) -> Option<(i8, i8)> {
 	let squ_deconstruct: Vec<char> = square.to_string().chars().collect();
 	if squ_deconstruct.len() == 1 {
-		return (10, 10);
+		return None;
 	}
-	
-	(squ_deconstruct[0] as i8 - 97, squ_deconstruct[1] as i8 - '0' as i8 - 1)
 
+	Some((8 - (squ_deconstruct[1] as i8 - '0' as i8), squ_deconstruct[0] as i8 - 97))
 }

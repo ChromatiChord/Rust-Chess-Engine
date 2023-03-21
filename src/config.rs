@@ -37,7 +37,7 @@ pub struct BoardState {
 	pub occupied_black: Vec<(i8, i8)>,
 	pub active_player: Player,
 	pub castle_rights: CastleRights,
-	pub enpassant_square: (i8, i8),
+	pub enpassant_square: Option<(i8, i8)>,
 }
 
 #[derive(Debug)]
