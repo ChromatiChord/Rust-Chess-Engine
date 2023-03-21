@@ -2,6 +2,7 @@ use crate::config;
 use config::Piece;
 use config::Player;
 use config::PieceInfo;
+use config::CastleRights;
 
 use crate::piece_movement;
 use piece_movement::piece_movement_brains;
@@ -20,8 +21,8 @@ pub fn fen_deconstruct(fen: &str) -> config::BoardState {
 		occupied_white: constructed_board_info.2,
 		occupied_black: constructed_board_info.3,
 		active_player: if deconstructed_fen[1] == "w" {Player::White} else {Player::Black},
-		castle_rights: deconstructed_fen[2],
-		enpassant_square: deconstructed_fen[3],
+		castle_rights: analyse_castle_rights(deconstructed_fen[2]),
+		enpassant_square: enpassant_deconstruct(deconstructed_fen[3]),
 	};
 	// println!("{:?}", boardstate);
 	
@@ -75,6 +76,7 @@ fn get_piece_at_pos(piece: char, rank_iter: i8, file_iter: i8) -> Option<PieceIn
 	if piece.is_numeric() {
 		return None;
 	}
+	
 
 	let piece_owner = if piece.is_uppercase() {Player::White} else {Player::Black};
 
@@ -101,4 +103,49 @@ fn get_piece_at_pos(piece: char, rank_iter: i8, file_iter: i8) -> Option<PieceIn
 	};
 	
 	return Some(piece_info);
+}
+
+
+fn analyse_castle_rights(rights: &str) -> CastleRights {
+	let decomp_rights: Vec<char> = rights.to_string().chars().collect();
+	let mut return_rights = CastleRights {
+		white_short: false,
+		white_long: false,
+		black_short: false,
+		black_long: false,
+	};
+
+	for right in decomp_rights {
+		// white player rights
+		if right.is_uppercase() {
+			if right == 'K' {
+				return_rights.white_short = true;
+			}
+			if right == 'Q' {
+				return_rights.white_long = true;
+			}
+		} 
+		// black player rights
+		else {
+			if right == 'k' {
+				return_rights.black_short = true;
+			}
+			if right == 'q' {
+				return_rights.black_long = true;
+			}
+		}
+	}
+	return_rights
+}
+
+// takes a enpasssant square string such as "d4",
+// and converts to coords: (3, 3)
+fn enpassant_deconstruct(square: &str) -> (i8, i8) {
+	let squ_deconstruct: Vec<char> = square.to_string().chars().collect();
+	if squ_deconstruct.len() == 1 {
+		return (10, 10);
+	}
+	
+	(squ_deconstruct[0] as i8 - 97, squ_deconstruct[1] as i8 - '0' as i8 - 1)
+
 }

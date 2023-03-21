@@ -17,7 +17,8 @@ pub fn get_available_moves(
     coords: &(i8, i8), 
     occupied_white: &Vec<(i8, i8)>, 
     occupied_black: &Vec<(i8, i8)>, 
-    enpassant_square: Option<(i8, i8)>) -> Vec<(i8, i8)> {
+    enpassant_square: Option<(i8, i8)>,
+    castle_rights: &str) -> Vec<(i8, i8)> {
         let occupied_self = match active_player {
             White => occupied_white.clone(),
             Black => occupied_black.clone()
@@ -32,7 +33,9 @@ pub fn get_available_moves(
             Piece::Knight => get_knight_moves(*coords, occupied_self, occupied_enemy),
             Piece::Bishop => get_bishop_moves(*coords, occupied_self, occupied_enemy),
             Piece::Queen => get_queen_moves(*coords, occupied_self, occupied_enemy),
-            Piece::King => get_king_moves(*coords, occupied_self, occupied_enemy),
+            Piece::King => {
+                get_king_moves(*coords, occupied_self, occupied_enemy)
+            },
             Piece::Pawn => get_pawn_moves(*coords, occupied_self, occupied_enemy, enpassant_square, *active_player),
             _ => panic!("Inputted piece is not a real piece!")
         };
