@@ -43,17 +43,20 @@ pub struct BoardState {
 #[derive(Debug)]
 pub enum SpecialAction {
     Promote,
-    Castle,
-    Enpassant
+    CastleShort,
+    CastleLong,
+    CastleBoth,
+    EnpassantGenerate,
+    EnpassantAttack
 }
 
 #[derive(Debug)]
 pub struct PieceMovementTrigger {
     pub new_square: (i8, i8),
-    pub special_action: Option<SpecialAction>
+    pub special_action: SpecialAction
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct CastleRights {
     pub white_short: bool,
     pub white_long: bool,

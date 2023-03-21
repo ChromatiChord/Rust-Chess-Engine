@@ -33,13 +33,16 @@ fn main() {
 	// for i in 1..1_0{
 	// }
 	
+	//  args: ( piece, player, piece_coords, occ_white, occ_black, enpassant_square, castle_rights )
 	for piece in &board.white_pieces {
-		println!("{:?} {:?}: {:?}", piece.owner, piece.piece_type, get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, board.enpassant_square, &"right"));
+		println!("{:?} {:?}: {:?}", 
+		piece.owner, 
+		piece.piece_type, 
+		get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, board.enpassant_square, board.castle_rights));
 	}
 
 	// println!("{:?} {:?}: {:?}", config::Player::White, config::Piece::Rook, get_available_moves(&config::Piece::Rook, &config::Player::White, &(1,2), &debug_selflist, &debug_enemylist, Some((8, 8))));
 
-	//  args: ( piece, player, piece_coords, occ_white, occ_black, enpassant_square )
 	// let squares = get_available_moves(config::Piece::Knight, config::Player::White, (1,2), debug_selflist, debug_enemylist, (8, 8));
 
 	println!("Done!")

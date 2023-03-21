@@ -1,6 +1,9 @@
 use super::out_of_bounds::out_of_bounds;
+use crate::config::PieceMovementTrigger;
+use crate::config::CastleRights;
 
-pub fn get_king_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) -> Vec<(i8, i8)>{
+
+pub fn get_king_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>, castle_rights: CastleRights) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>){
     
     let king_movement: Vec<(i8, i8)> = vec![
         (-1, 0),
@@ -14,6 +17,8 @@ pub fn get_king_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_e
     ];
 
     let mut possible_squares: Vec<(i8, i8)> = Vec::new();
+    let mut special_possible_squares: Vec<PieceMovementTrigger> = Vec::new();
+
     for movement in king_movement {
         let rank = square.0 + movement.0;
         let file = square.1 + movement.1;
@@ -29,5 +34,5 @@ pub fn get_king_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_e
             possible_squares.push((rank,file));
         }
     }
-    possible_squares
+    (possible_squares, special_possible_squares)
 }

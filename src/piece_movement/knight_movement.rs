@@ -2,7 +2,8 @@ use crate::config::PieceMovementTrigger;
 
 use super::out_of_bounds::out_of_bounds;
 
-pub fn get_knight_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) -> (Vec<(i8, i8)>, Option<PieceMovementTrigger>) {
+pub fn get_knight_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) -> 
+(Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
 
     let knight_movement: Vec<(i8, i8)> = vec![
         (-2, -1),
@@ -31,5 +32,5 @@ pub fn get_knight_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied
             possible_squares.push((rank,file));
         }
     }
-    (possible_squares, None)
+    (possible_squares, vec![])
 }

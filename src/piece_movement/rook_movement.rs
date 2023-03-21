@@ -3,7 +3,7 @@ use crate::config::PieceMovementTrigger;
 use super::out_of_bounds::out_of_bounds;
 
 pub fn get_rook_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) ->
-(Vec<(i8, i8)>, Option<PieceMovementTrigger>) {
+(Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
 
     let rook_movement: Vec<(i8, i8)> = vec![
         (-1, 0),
@@ -13,6 +13,7 @@ pub fn get_rook_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_e
     ];
     
     let mut possible_squares: Vec<(i8, i8)> = Vec::new();
+
     for movement in rook_movement {
         let mut rank = square.0;
         let mut file = square.1;
@@ -37,5 +38,5 @@ pub fn get_rook_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_e
 
         }
     }
-    (possible_squares, None)
+    (possible_squares, vec![])
 } 
