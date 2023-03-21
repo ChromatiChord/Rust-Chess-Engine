@@ -28,7 +28,7 @@ pub fn get_available_moves(
             Black => occupied_white.clone()
         };
         
-        let available_squares: Vec<(i8, i8)> = match piece_type {
+        let (available_squares, special_action) = match piece_type {
             Piece::Rook => get_rook_moves(*coords, occupied_self, occupied_enemy),
             Piece::Knight => get_knight_moves(*coords, occupied_self, occupied_enemy),
             Piece::Bishop => get_bishop_moves(*coords, occupied_self, occupied_enemy),

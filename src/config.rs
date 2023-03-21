@@ -48,7 +48,7 @@ pub enum SpecialAction {
 }
 
 #[derive(Debug)]
-pub struct PieceMovement {
+pub struct PieceMovementTrigger {
     pub new_square: (i8, i8),
     pub special_action: Option<SpecialAction>
 }

@@ -1,7 +1,9 @@
+use crate::config::PieceMovementTrigger;
+
 use super::out_of_bounds::out_of_bounds;
 
 pub fn get_rook_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) ->
-Vec<(i8, i8)> {
+(Vec<(i8, i8)>, Option<PieceMovementTrigger>) {
 
     let rook_movement: Vec<(i8, i8)> = vec![
         (-1, 0),
@@ -35,5 +37,5 @@ Vec<(i8, i8)> {
 
         }
     }
-    possible_squares
+    (possible_squares, None)
 } 
