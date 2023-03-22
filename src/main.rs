@@ -54,7 +54,10 @@ fn main() {
 
 	// let squares = get_available_moves(config::Piece::Knight, config::Player::White, (1,2), debug_selflist, debug_enemylist, (8, 8));
 
-    evaulation_position(&board, vec![], 1, 1);
+
+    let (depth, alpha, beta) =(3, 1, 1);
+
+    evaulation_position(&board, vec![], depth, alpha, beta);
 
 	println!("Done!")
 }
