@@ -59,7 +59,7 @@ fn main() {
 
     let (depth, alpha, beta) = (3, 1, 1);
 
-    evaulation_position(&board, vec![], depth, alpha, beta, Side::Own);
+    evaulation_position(&board, Some(vec![]), depth, alpha, beta, Side::Own);
 
 	println!("Done!")
 }
