@@ -1,14 +1,9 @@
-use super::bishop_movement::get_bishop_moves;
-use super::rook_movement::get_rook_moves;
-
 use super::out_of_bounds::out_of_bounds;
 
-use crate::config;
-use config::PieceMovementTrigger;
-use config::SpecialAction;
+use crate::config::{self, PieceActionTrigger, SpecialAction};
 
 pub fn get_queen_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) ->
-(Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
+(Vec<(i8, i8)>, Vec<PieceActionTrigger>) {
     let queen_movement: Vec<(i8, i8)> = vec![
         (-1, 1),
         (1, 1),
@@ -20,7 +15,7 @@ pub fn get_queen_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_
         (0, -1)
     ];
     let mut possible_squares: Vec<(i8, i8)> = Vec::new();
-    let mut special_possible_squares: Vec<PieceMovementTrigger> = Vec::new();
+    let mut special_possible_squares: Vec<PieceActionTrigger> = Vec::new();
 
     for movement in queen_movement {
         let mut rank = square.0;
@@ -38,7 +33,7 @@ pub fn get_queen_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_
             if out_of_bounds(rank, file) || occupied_self.contains(&coordinates) {
                 stop = true;
             } else if occupied_enemy.contains(&coordinates) {
-                special_possible_squares.push(PieceMovementTrigger { 
+                special_possible_squares.push(PieceActionTrigger { 
                     new_square: coordinates, 
                     special_action: SpecialAction::Capture });
                     stop = true;

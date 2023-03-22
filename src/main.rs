@@ -2,25 +2,31 @@
 
 use text_io::read;
 mod config;
+
 mod fen;
 use fen::fen_construct::fen_construct;
 use fen::fen_deconstruct::fen_deconstruct;
 
+mod engine;
+use engine::engine_wrapper::evaulation_position;
+
 mod piece_movement;
 use piece_movement::piece_movement_brains::get_available_moves;
+
+
 
 mod evaluation;
 
 fn main() {
 	// User FEN input
-	print!("Enter an fen: ");
-	let input_fen: String = read!("{}\n");
-	let mut fen = &input_fen[..];
+	// print!("Enter an fen: ");
+	// let input_fen: String = read!("{}\n");
+	// let mut fen = &input_fen[..];
 
 	let budget = 5_000_000;
 
 	// let mut fen: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - e3 0 1";
-	// let mut fen: &str = "8/8/2k5/8/6b1/3PK3/8/8 w - - 0 1";
+	let mut fen: &str = "8/8/8/8/8/8/8/R3K2R w K - 0 1";
 
 	//strips turn info and repeat count from the FEN
 	let turn_info = &fen[fen.len() - 3..fen.len()];
@@ -35,18 +41,21 @@ fn main() {
 	// }
 	
 	//  args: ( piece, player, piece_coords, occ_white, occ_black, enpassant_square, castle_rights )
-	for piece in &board.white_pieces {
-		let (available_moves, special_moves) = get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, board.enpassant_square, board.castle_rights);
-		println!("{:?} {:?}: {:?} {:?}", piece.owner, piece.piece_type, available_moves, special_moves);
-	}
-	for piece in &board.black_pieces {
-		let (available_moves, special_moves) = get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, board.enpassant_square, board.castle_rights);
-		println!("{:?} {:?} {:?}: {:?} {:?}", piece.owner, piece.piece_type, piece.square, available_moves, special_moves);
-	}
+	// for piece in &board.white_pieces {
+	// 	let (available_moves, special_moves) = get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, board.enpassant_square, board.castle_rights);
+	// 	println!("{:?} {:?}: {:?} {:?}", piece.owner, piece.piece_type, available_moves, special_moves);
+	// }
+	// for piece in &board.black_pieces {
+	// 	let (available_moves, special_moves) = get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, board.enpassant_square, board.castle_rights);
+	// 	println!("{:?} {:?} {:?}: {:?} {:?}", piece.owner, piece.piece_type, piece.square, available_moves, special_moves);
+	// }
 
 	// println!("{:?} {:?}: {:?}", config::Player::White, config::Piece::Rook, get_available_moves(&config::Piece::Rook, &config::Player::White, &(1,2), &debug_selflist, &debug_enemylist, Some((8, 8))));
 
 	// let squares = get_available_moves(config::Piece::Knight, config::Player::White, (1,2), debug_selflist, debug_enemylist, (8, 8));
+
+    evaulation_position(&board, (vec![], vec![]));
+    
 
 	println!("Done!")
 }

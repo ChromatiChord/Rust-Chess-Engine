@@ -1,11 +1,9 @@
-use crate::config;
-use config::PieceMovementTrigger;
-use config::SpecialAction;
+use crate::config::{self, PieceActionTrigger, SpecialAction};
 
 use super::out_of_bounds::out_of_bounds;
 
 pub fn get_rook_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) ->
-(Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
+(Vec<(i8, i8)>, Vec<PieceActionTrigger>) {
 
     let rook_movement: Vec<(i8, i8)> = vec![
         (-1, 0),
@@ -15,7 +13,7 @@ pub fn get_rook_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_e
     ];
     
     let mut possible_squares: Vec<(i8, i8)> = Vec::new();
-    let mut special_possible_squares: Vec<PieceMovementTrigger> = Vec::new();
+    let mut special_possible_squares: Vec<PieceActionTrigger> = Vec::new();
 
     for movement in rook_movement {
         let mut rank = square.0;
@@ -33,7 +31,7 @@ pub fn get_rook_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_e
             if out_of_bounds(rank, file) || occupied_self.contains(&coordinates) {
                 stop = true;
             } else if occupied_enemy.contains(&coordinates) {
-                special_possible_squares.push(PieceMovementTrigger { 
+                special_possible_squares.push(PieceActionTrigger { 
                     new_square: coordinates, 
                     special_action: SpecialAction::Capture });
                     stop = true;

@@ -3,17 +3,17 @@ use config::Player;
 use config::Player::White;
 use config::Player::Black;
 
-use config::PieceMovementTrigger;
+use config::PieceActionTrigger;
 use config::SpecialAction;
 
 pub fn get_pawn_moves(square: (i8, i8), 
 occupied_self: Vec<(i8, i8)>, 
 occupied_enemy: Vec<(i8, i8)>, 
 enpassant_square: Option<(i8, i8)>, 
-active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
+active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceActionTrigger>) {
     
     let mut possible_squares: Vec<(i8, i8)> = Vec::new();
-    let mut special_possible_squares: Vec<PieceMovementTrigger> = Vec::new();
+    let mut special_possible_squares: Vec<PieceActionTrigger> = Vec::new();
     
     // check which rank the pawn is allowed to dash on
     let double_rank = match active_player {
@@ -39,7 +39,7 @@ active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
         let two_space_new_square = (square.0 + direction * 2, square.1);
         if !occupied_self.contains(&two_space_new_square) && !occupied_enemy.contains(&two_space_new_square) {
             if !one_ahead_occupied {
-                special_possible_squares.push(PieceMovementTrigger {
+                special_possible_squares.push(PieceActionTrigger {
                     new_square: two_space_new_square,
                     special_action: SpecialAction::EnpassantGenerate
                 });
@@ -49,13 +49,13 @@ active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
 
     // diagonal capture check
     if occupied_enemy.contains(&(square.0 + direction, square.1 + 1)) {
-        special_possible_squares.push(PieceMovementTrigger {
+        special_possible_squares.push(PieceActionTrigger {
             new_square: (square.0 + direction, square.1 + 1),
             special_action: SpecialAction::Capture
         });
     }
     if occupied_enemy.contains(&(square.0 + direction, square.1 - 1)) {
-        special_possible_squares.push(PieceMovementTrigger {
+        special_possible_squares.push(PieceActionTrigger {
             new_square: (square.0 + direction, square.1 - 1),
             special_action: SpecialAction::Capture
         });
@@ -65,13 +65,13 @@ active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
     match enpassant_square {
         Some(en_square) => {
             if en_square ==  (square.0 + direction, square.1 + 1) {
-                special_possible_squares.push(PieceMovementTrigger {
+                special_possible_squares.push(PieceActionTrigger {
                     new_square: (square.0 + direction, square.1 + 1),
                     special_action: SpecialAction::EnpassantAttack
                 });
             }
             else if en_square ==  (square.0 + direction, square.1 - 1)  {
-                special_possible_squares.push(PieceMovementTrigger {
+                special_possible_squares.push(PieceActionTrigger {
                     new_square: (square.0 + direction, square.1 - 1),
                     special_action: SpecialAction::EnpassantAttack
                 });

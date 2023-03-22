@@ -1,10 +1,8 @@
-use crate::config;
-use config::PieceMovementTrigger;
-use config::SpecialAction;
+use crate::config::{self, PieceActionTrigger, BoardState, SpecialAction};
 use super::out_of_bounds::out_of_bounds;
 
 pub fn get_knight_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) -> 
-(Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
+(Vec<(i8, i8)>, Vec<PieceActionTrigger>) {
 
     let knight_movement: Vec<(i8, i8)> = vec![
         (-2, -1),
@@ -18,7 +16,7 @@ pub fn get_knight_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied
     ];
 
     let mut possible_squares: Vec<(i8, i8)> = Vec::new();
-    let mut special_possible_squares: Vec<PieceMovementTrigger> = Vec::new();
+    let mut special_possible_squares: Vec<PieceActionTrigger> = Vec::new();
 
     for movement in knight_movement {
         let rank = square.0 + movement.0;
@@ -29,7 +27,7 @@ pub fn get_knight_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied
         if out_of_bounds(rank, file) || occupied_self.contains(&coordinates) {
             continue;
         } else if occupied_enemy.contains(&coordinates) {
-            special_possible_squares.push(PieceMovementTrigger { 
+            special_possible_squares.push(PieceActionTrigger { 
                 new_square: coordinates, 
                 special_action: SpecialAction::Capture });
         } else {

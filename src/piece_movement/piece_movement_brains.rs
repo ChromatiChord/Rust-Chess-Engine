@@ -5,7 +5,7 @@ use config::Player::White;
 use config::Player::Black;
 use config::Piece;
 use config::CastleRights;
-use config::PieceMovementTrigger;
+use config::PieceActionTrigger;
 
 use super::rook_movement::get_rook_moves;
 use super::knight_movement::get_knight_moves;
@@ -21,7 +21,7 @@ pub fn get_available_moves(
     occupied_white: &Vec<(i8, i8)>, 
     occupied_black: &Vec<(i8, i8)>, 
     enpassant_square: Option<(i8, i8)>,
-    castle_rights: CastleRights) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
+    castle_rights: CastleRights) -> (Vec<(i8, i8)>, Vec<PieceActionTrigger>) {
         let occupied_self = match active_player {
             White => occupied_white.clone(),
             Black => occupied_black.clone()
@@ -37,7 +37,7 @@ pub fn get_available_moves(
             Piece::Knight => get_knight_moves(*coords, occupied_self, occupied_enemy),
             Piece::Bishop => get_bishop_moves(*coords, occupied_self, occupied_enemy),
             Piece::Queen => get_queen_moves(*coords, occupied_self, occupied_enemy),
-            Piece::King => get_king_moves(*coords, occupied_self, occupied_enemy, castle_rights),
+            Piece::King => get_king_moves(*coords, occupied_self, occupied_enemy, castle_rights, *active_player),
             Piece::Pawn => get_pawn_moves(*coords, occupied_self, occupied_enemy, enpassant_square, *active_player),
             _ => panic!("Inputted piece is not a real piece!")
         };

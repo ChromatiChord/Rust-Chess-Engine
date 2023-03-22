@@ -21,6 +21,19 @@ pub enum Piece {
     Pawn,
 }
 
+// ------------ BIG BOY BOARD STATE ------------
+#[derive(Debug)]
+pub struct BoardState {
+    pub white_pieces: Vec<PieceInfo>,
+    pub black_pieces: Vec<PieceInfo>,
+    pub occupied_white: Vec<(i8, i8)>,
+    pub occupied_black: Vec<(i8, i8)>,
+    pub active_player: Player,
+    pub castle_rights: CastleRights,
+    pub enpassant_square: Option<(i8, i8)>,
+}
+
+// stored in the board_state, where all a piece's data is
 #[derive(Debug, Clone)]
 pub struct PieceInfo {
     pub piece_type: Piece,
@@ -29,15 +42,11 @@ pub struct PieceInfo {
     pub owner: Player
 }
 
+// Structure used when a piece makes a move that affects another piece
 #[derive(Debug)]
-pub struct BoardState {
-	pub white_pieces: Vec<PieceInfo>,
-	pub black_pieces: Vec<PieceInfo>,
-	pub occupied_white: Vec<(i8, i8)>,
-	pub occupied_black: Vec<(i8, i8)>,
-	pub active_player: Player,
-	pub castle_rights: CastleRights,
-	pub enpassant_square: Option<(i8, i8)>,
+pub struct PieceActionTrigger {
+    pub new_square: (i8, i8),
+    pub special_action: SpecialAction
 }
 
 #[derive(Debug)]
@@ -48,12 +57,6 @@ pub enum SpecialAction {
     CastleShort,
     CastleLong,
     Capture
-}
-
-#[derive(Debug)]
-pub struct PieceMovementTrigger {
-    pub new_square: (i8, i8),
-    pub special_action: SpecialAction
 }
 
 #[derive(Debug, Clone, Copy)]
