@@ -1,4 +1,5 @@
 use crate::config;
+use crate::config::SpecialAction;
 use config::Player;
 use config::Player::White;
 use config::Player::Black;
@@ -20,7 +21,7 @@ pub fn get_available_moves(
     occupied_white: &Vec<(i8, i8)>, 
     occupied_black: &Vec<(i8, i8)>, 
     enpassant_square: Option<(i8, i8)>,
-    castle_rights: CastleRights) -> Vec<(i8, i8)> {
+    castle_rights: CastleRights) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
         let occupied_self = match active_player {
             White => occupied_white.clone(),
             Black => occupied_black.clone()
@@ -40,7 +41,6 @@ pub fn get_available_moves(
             Piece::Pawn => get_pawn_moves(*coords, occupied_self, occupied_enemy, enpassant_square, *active_player),
             _ => panic!("Inputted piece is not a real piece!")
         };
-        println!("{:?}", special_actions);
-        available_squares
+        (available_squares, special_actions)
         // let mut special_possible_squares: Vec<(i8, i8)> = Vec::new();
 }

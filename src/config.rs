@@ -43,11 +43,11 @@ pub struct BoardState {
 #[derive(Debug)]
 pub enum SpecialAction {
     Promote,
+    EnpassantGenerate,
+    EnpassantAttack,
     CastleShort,
     CastleLong,
-    CastleBoth,
-    EnpassantGenerate,
-    EnpassantAttack
+    Capture
 }
 
 #[derive(Debug)]

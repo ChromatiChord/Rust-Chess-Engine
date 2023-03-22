@@ -1,6 +1,9 @@
 use super::out_of_bounds::out_of_bounds;
-use crate::config::PieceMovementTrigger;
-use crate::config::CastleRights;
+
+use crate::config;
+use config::PieceMovementTrigger;
+use config::CastleRights;
+use config::SpecialAction;
 
 
 pub fn get_king_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>, castle_rights: CastleRights) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>){
@@ -28,8 +31,9 @@ pub fn get_king_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_e
         if out_of_bounds(rank, file) || occupied_self.contains(&coordinates) {
             continue;
         } else if occupied_enemy.contains(&coordinates) {
-            possible_squares.push(coordinates);
-            continue;
+            special_possible_squares.push(PieceMovementTrigger { 
+                new_square: coordinates, 
+                special_action: SpecialAction::Capture })
         } else {
             possible_squares.push((rank,file));
         }

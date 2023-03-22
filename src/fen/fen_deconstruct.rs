@@ -43,10 +43,10 @@ pub fn construct_board(pieces: &str) -> ( Vec<PieceInfo>, Vec<PieceInfo>, Vec<(i
 	
 	// loop through ranks
 	for (rank_iter, rank) in ranks.iter().enumerate() {
-		// loop through files
+		let mut exterior_file_iter = 0;
 		for (file_iter, file) in rank.chars().enumerate() {
-			let mut piece_at_pos_result = get_piece_at_pos(file, rank_iter as i8, file_iter as i8);
-
+            exterior_file_iter += 1;
+			let (mut piece_at_pos_result, file_increment) = get_piece_at_pos(file, rank_iter as i8, exterior_file_iter as i8 - 1);
 			match piece_at_pos_result {
 				Some(new_piece) => {
 					match new_piece.owner {
@@ -60,7 +60,9 @@ pub fn construct_board(pieces: &str) -> ( Vec<PieceInfo>, Vec<PieceInfo>, Vec<(i
 						}
 					};
 				},
-				None => ()
+				None => {
+                    exterior_file_iter += file_increment - 1;
+                }
 			}
 
 		}
@@ -71,10 +73,10 @@ pub fn construct_board(pieces: &str) -> ( Vec<PieceInfo>, Vec<PieceInfo>, Vec<(i
 
 // required for parsing values such as '5' (5 empty spaces in a row)
 // if a piece is detected, return details just returns the piece value itself
-fn get_piece_at_pos(piece: char, rank_iter: i8, file_iter: i8) -> Option<PieceInfo> {
+fn get_piece_at_pos(piece: char, rank_iter: i8, file_iter: i8) -> (Option<PieceInfo>, usize) {
 	
 	if piece.is_numeric() {
-		return None;
+		return (None, piece.to_digit(10).unwrap() as usize);
 	}
 	
 
@@ -102,7 +104,7 @@ fn get_piece_at_pos(piece: char, rank_iter: i8, file_iter: i8) -> Option<PieceIn
 		owner: piece_owner
 	};
 	
-	return Some(piece_info);
+	return (Some(piece_info), 0);
 }
 
 
