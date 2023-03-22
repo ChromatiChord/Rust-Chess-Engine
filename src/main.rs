@@ -8,12 +8,12 @@ use fen::fen_construct::fen_construct;
 use fen::fen_deconstruct::fen_deconstruct;
 
 mod engine;
-use engine::engine_wrapper::evaulation_position;
+use engine::engine_wrapper::evaluation_position;
 
 mod piece_movement;
-use piece_movement::piece_movement_brains::get_available_moves;
+// use piece_movement::piece_movement_brains::get_available_moves;
 
-use crate::config::Side;
+use crate::config::Agent;
 
 
 
@@ -57,9 +57,9 @@ fn main() {
 	// let squares = get_available_moves(config::Piece::Knight, config::Player::White, (1,2), debug_selflist, debug_enemylist, (8, 8));
 
 
-    let (depth, alpha, beta) = (3, 1, 1);
+    let (depth, alpha, beta) = (1, 1, 1);
 
-    evaulation_position(&board, Some(vec![]), depth, alpha, beta, Side::Own);
+    evaluation_position(&board, Some(vec![]), depth, alpha, beta, Agent::Max);
 
 	println!("Done!")
 }

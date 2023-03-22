@@ -4,9 +4,9 @@ pub enum Player {
 	Black
 }
 
-pub enum Side {
-	Own,
-	Enemy
+pub enum Agent {
+	Max,
+	Min
 }
 
 pub fn switch_player(player: Player) -> Player {
@@ -16,7 +16,7 @@ pub fn switch_player(player: Player) -> Player {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Piece {
     Knight,
     Bishop,
@@ -68,7 +68,7 @@ pub struct PieceActionTrigger {
 pub struct AvailablePieceMoves {
     pub piece: PieceInfo,
     pub available_moves: Vec<(i8, i8)>,
-    pub special_actions: Vec<SpecialAction>
+    pub special_actions: Vec<PieceActionTrigger>
 }
 
 #[derive(Debug, Clone, Copy)]

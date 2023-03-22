@@ -1,11 +1,4 @@
-use crate::config;
-use crate::config::SpecialAction;
-use config::Player;
-use config::Player::White;
-use config::Player::Black;
-use config::Piece;
-use config::CastleRights;
-use config::PieceActionTrigger;
+use crate::config::{self, SpecialAction, Player, Piece, CastleRights, PieceActionTrigger, BoardState, AvailablePieceMoves};
 
 use super::rook_movement::get_rook_moves;
 use super::knight_movement::get_knight_moves;
@@ -14,7 +7,34 @@ use super::queen_movement::get_queen_moves;
 use super::king_movement::get_king_moves;
 use super::pawn_movement::get_pawn_moves;
 
-pub fn get_available_moves(
+
+pub fn get_available_moves_from_state(board_state: &BoardState, team: Player) -> Vec<AvailablePieceMoves> {
+    let mut available_moves: Vec<AvailablePieceMoves> = vec![];
+    match team {
+        Player::White => {
+            for piece in board_state.white_pieces {
+                let (generated_moves, generated_special_moves) = get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board_state.occupied_white, &board_state.occupied_black, board_state.enpassant_square, board_state.castle_rights);
+                available_moves.push(AvailablePieceMoves { 
+                    piece, 
+                    available_moves: generated_moves, 
+                    special_actions: generated_special_moves })
+            }
+        },
+        Player::Black => {
+            for piece in board_state.black_pieces {
+                let (generated_moves, generated_special_moves) = get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board_state.occupied_white, &board_state.occupied_black, board_state.enpassant_square, board_state.castle_rights);
+                available_moves.push(AvailablePieceMoves { 
+                    piece, 
+                    available_moves: generated_moves, 
+                    special_actions: generated_special_moves })
+            }
+        }
+    }
+    available_moves
+}
+
+
+fn get_available_moves(
     piece_type: &Piece, 
     active_player: &Player,
     coords: &(i8, i8), 
@@ -23,12 +43,12 @@ pub fn get_available_moves(
     enpassant_square: Option<(i8, i8)>,
     castle_rights: CastleRights) -> (Vec<(i8, i8)>, Vec<PieceActionTrigger>) {
         let occupied_self = match active_player {
-            White => occupied_white.clone(),
-            Black => occupied_black.clone()
+            Player::White => occupied_white.clone(),
+            Player::Black => occupied_black.clone()
         };
         let occupied_enemy = match active_player {
-            White => occupied_black.clone(),
-            Black => occupied_white.clone()
+            Player::White => occupied_black.clone(),
+            Player::Black => occupied_white.clone()
         };
         
         // SOLUTION: have special_action be a list itself
