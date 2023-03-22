@@ -42,13 +42,6 @@ pub struct PieceInfo {
     pub owner: Player
 }
 
-// Structure used when a piece makes a move that affects another piece
-#[derive(Debug)]
-pub struct PieceActionTrigger {
-    pub new_square: (i8, i8),
-    pub special_action: SpecialAction
-}
-
 #[derive(Debug)]
 pub enum SpecialAction {
     Promote,
@@ -57,6 +50,20 @@ pub enum SpecialAction {
     CastleShort,
     CastleLong,
     Capture
+}
+
+// Structure used when a piece makes a move that affects another piece
+#[derive(Debug)]
+pub struct PieceActionTrigger {
+    pub new_square: (i8, i8),
+    pub special_action: SpecialAction
+}
+
+// when generating moves, this is the structure we use to store what we iterate through
+pub struct AvailablePieceMoves {
+    pub piece: PieceInfo,
+    pub available_moves: Vec<(i8, i8)>,
+    pub special_actions: Vec<SpecialAction>
 }
 
 #[derive(Debug, Clone, Copy)]

@@ -1,6 +1,6 @@
 #![allow(dead_code, unused)]
 
-use text_io::read;
+// use text_io::read;
 mod config;
 
 mod fen;
@@ -54,8 +54,7 @@ fn main() {
 
 	// let squares = get_available_moves(config::Piece::Knight, config::Player::White, (1,2), debug_selflist, debug_enemylist, (8, 8));
 
-    evaulation_position(&board, (vec![], vec![]));
-    
+    evaulation_position(&board, vec![], 1, 1);
 
 	println!("Done!")
 }
