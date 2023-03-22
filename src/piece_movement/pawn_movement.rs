@@ -26,7 +26,7 @@ active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
         Black => 1
     };
     
-    // check if pawn can jump square ahead
+    // check if pawn can jump 1 square ahead
     let one_space_new_square = (square.0 + direction, square.1);
     let mut one_ahead_occupied = true;
     if !occupied_self.contains(&one_space_new_square) && !occupied_enemy.contains(&one_space_new_square) {
@@ -34,7 +34,7 @@ active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
         one_ahead_occupied = false;
     } 
     
-    // check if we can jump 2 spaces
+    // check if pawn can jump 2 spaces
     if square.0 == double_rank {
         let two_space_new_square = (square.0 + direction * 2, square.1);
         if !occupied_self.contains(&two_space_new_square) && !occupied_enemy.contains(&two_space_new_square) {
@@ -45,6 +45,20 @@ active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
                 });
             }
         }
+    }
+
+    // diagonal capture check
+    if occupied_enemy.contains(&(square.0 + direction, square.1 + 1)) {
+        special_possible_squares.push(PieceMovementTrigger {
+            new_square: (square.0 + direction, square.1 + 1),
+            special_action: SpecialAction::Capture
+        });
+    }
+    if occupied_enemy.contains(&(square.0 + direction, square.1 - 1)) {
+        special_possible_squares.push(PieceMovementTrigger {
+            new_square: (square.0 + direction, square.1 - 1),
+            special_action: SpecialAction::Capture
+        });
     }
 
     // en passant check

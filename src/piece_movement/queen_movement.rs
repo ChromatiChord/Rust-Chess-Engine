@@ -1,14 +1,52 @@
 use super::bishop_movement::get_bishop_moves;
 use super::rook_movement::get_rook_moves;
 
-use crate::config::PieceMovementTrigger;
+use super::out_of_bounds::out_of_bounds;
+
+use crate::config;
+use config::PieceMovementTrigger;
+use config::SpecialAction;
 
 pub fn get_queen_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) ->
 (Vec<(i8, i8)>, Vec<PieceMovementTrigger>) {
-        let mut possible_squares: Vec<(i8, i8)> = Vec::new();
+    let queen_movement: Vec<(i8, i8)> = vec![
+        (-1, 1),
+        (1, 1),
+        (1, -1),
+        (-1, -1),
+        (-1, 0),
+        (0, 1),
+        (1, 0),
+        (0, -1)
+    ];
+    let mut possible_squares: Vec<(i8, i8)> = Vec::new();
+    let mut special_possible_squares: Vec<PieceMovementTrigger> = Vec::new();
 
-        possible_squares.append(&mut get_bishop_moves(square, occupied_self.clone(), occupied_enemy.clone()).0);
-        possible_squares.append(&mut get_rook_moves(square, occupied_self, occupied_enemy).0);
-        
-        (possible_squares, vec![])
-}
+    for movement in queen_movement {
+        let mut rank = square.0;
+        let mut file = square.1;
+        let rank_iterate = movement.0;
+        let file_iterate = movement.1;
+        let mut stop = false;
+
+        while !stop {
+            rank += rank_iterate;
+            file += file_iterate;
+
+            let coordinates = (rank, file);
+            // checks if values are out of bounds, or if it's occupied by own pieces
+            if out_of_bounds(rank, file) || occupied_self.contains(&coordinates) {
+                stop = true;
+            } else if occupied_enemy.contains(&coordinates) {
+                special_possible_squares.push(PieceMovementTrigger { 
+                    new_square: coordinates, 
+                    special_action: SpecialAction::Capture });
+                    stop = true;
+            } else {
+                possible_squares.push((rank,file));
+            }
+
+        }
+    }
+    (possible_squares, special_possible_squares)
+} 

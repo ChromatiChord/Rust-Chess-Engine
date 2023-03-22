@@ -33,7 +33,7 @@ pub fn get_king_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied_e
         } else if occupied_enemy.contains(&coordinates) {
             special_possible_squares.push(PieceMovementTrigger { 
                 new_square: coordinates, 
-                special_action: SpecialAction::Capture })
+                special_action: SpecialAction::Capture });
         } else {
             possible_squares.push((rank,file));
         }

@@ -1,4 +1,7 @@
-use crate::config::PieceMovementTrigger;
+use crate::config;
+use config::PieceMovementTrigger;
+use config::SpecialAction;
+
 
 use super::out_of_bounds::out_of_bounds;
 
@@ -11,6 +14,8 @@ pub fn get_bishop_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied
         (-1, -1)
     ];
     let mut possible_squares: Vec<(i8, i8)> = Vec::new();
+    let mut special_possible_squares: Vec<PieceMovementTrigger> = Vec::new();
+
     for movement in bishop_movement {
         let mut rank = square.0;
         let mut file = square.1;
@@ -27,13 +32,15 @@ pub fn get_bishop_moves(square: (i8, i8), occupied_self: Vec<(i8, i8)>, occupied
             if out_of_bounds(rank, file) || occupied_self.contains(&coordinates) {
                 stop = true;
             } else if occupied_enemy.contains(&coordinates) {
-                possible_squares.push(coordinates);
-                stop = true;
+                special_possible_squares.push(PieceMovementTrigger { 
+                    new_square: coordinates, 
+                    special_action: SpecialAction::Capture });
+                    stop = true;
             } else {
                 possible_squares.push((rank,file));
             }
 
         }
     }
-    (possible_squares, vec![])
+    (possible_squares, special_possible_squares)
 } 
