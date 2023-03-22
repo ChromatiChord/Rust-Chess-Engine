@@ -4,6 +4,11 @@ pub enum Player {
 	Black
 }
 
+pub enum Side {
+	Own,
+	Enemy
+}
+
 pub fn switch_player(player: Player) -> Player {
     match player {
         Player::White => return Player::Black,

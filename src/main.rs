@@ -13,6 +13,8 @@ use engine::engine_wrapper::evaulation_position;
 mod piece_movement;
 use piece_movement::piece_movement_brains::get_available_moves;
 
+use crate::config::Side;
+
 
 
 mod evaluation;
@@ -55,9 +57,9 @@ fn main() {
 	// let squares = get_available_moves(config::Piece::Knight, config::Player::White, (1,2), debug_selflist, debug_enemylist, (8, 8));
 
 
-    let (depth, alpha, beta) =(3, 1, 1);
+    let (depth, alpha, beta) = (3, 1, 1);
 
-    evaulation_position(&board, vec![], depth, alpha, beta);
+    evaulation_position(&board, vec![], depth, alpha, beta, Side::Own);
 
 	println!("Done!")
 }
