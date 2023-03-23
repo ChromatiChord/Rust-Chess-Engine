@@ -2,9 +2,9 @@ use crate::config::{self, PieceActionTrigger, BoardState, AvailablePieceMoves, A
 use crate::piece_movement;
 use crate::piece_movement::piece_movement_brains::get_available_moves_from_state;
 
-pub fn evaluation_position(
+pub fn get_number_of_moves(
     board_state: &BoardState, 
-    available_moves: Option<Vec<AvailablePieceMoves>>, 
+    available_moves: Option<&Vec<AvailablePieceMoves>>, 
     depth: i8,  
     alpha: i16, beta: i16, 
     agent: Agent) -> i16 {
@@ -19,8 +19,8 @@ pub fn evaluation_position(
     // check if available moves is empty:
     // if so, this is the first iteration
     let available_moves = match available_moves {
-        Some(moves) => moves,
-        None => get_available_moves_from_state(board_state, board_state.active_player),
+        Some(moves) => *moves,
+        None => get_available_moves_from_state(&board_state, board_state.active_player),
     };
 
     // vector for storing the results of available positions
@@ -43,14 +43,12 @@ pub fn evaluation_position(
 
         let enemy_available_moves = get_available_moves_from_state(&new_board_state, enemy_player);
 
-        let cur_king_coords = get_king_coords(&board_state);
-
         // for move in enemy_moves:
         for enemy_mv in &enemy_available_moves {
             // if king pos is NOT in available moves (accounts for check):
-            if !king_pos_in_moves(&new_board_state, enemy_mv) {
-                // send that data into a new evaluation_position(depth - 1, enemy_moves) function
-                let result = evaluation_position(&new_board_state, Some(enemy_available_moves), depth - 1, alpha, beta, enemy_agent);
+            if !is_king_in_check(&new_board_state, &enemy_available_moves) {
+                // send that data into a new get_number_of_moves(depth - 1, enemy_moves) function
+                let result = get_number_of_moves(&new_board_state, Some(&enemy_available_moves), depth - 1, alpha, beta, enemy_agent);
                 // append result to vector
                 position_results.push(result);
             }
@@ -59,24 +57,42 @@ pub fn evaluation_position(
 
     // if Agent::Min, return smallest value from vector
     // else if Agent::Max, return largest value from vector
-    match agent {
-        Agent::Max => *position_results.iter().max().unwrap_or(&0),
-        Agent::Min => *position_results.iter().min().unwrap_or(&0),
-    }
+    // match agent {
+    //     Agent::Max => *position_results.iter().sum().unwrap_or(&0),
+    //     Agent::Min => *position_results.iter().min().unwrap_or(&0),
+    // }
+    // if Agent::Min, return smallest value from vector
+    // else if Agent::Max, return largest value from vector
+    position_results.iter().sum()
 }
 
 fn evaluate_position(board_state: &BoardState) -> i16 {
-    0
+    1
 }
 
-fn update_board_with_new_params(board_state: &BoardState, piece_movement: AvailablePieceMoves) -> BoardState{
+fn update_board_with_new_params(board_state: &BoardState, piece_movement: &AvailablePieceMoves) -> BoardState{
     *board_state.clone()
 }
 
 // get coords of the king
-fn get_king_coords(board_state: &BoardState) {
-    match board_state.active_player {
+fn is_king_in_check(board_state: &BoardState, enemy_available_moves: &Vec<AvailablePieceMoves>) -> bool {
+    let king_coords = match board_state.active_player {
         Player::White => board_state.white_pieces.iter().find(|piece_info| piece_info.piece_type == Piece::King).unwrap().square,
         Player::Black => board_state.black_pieces.iter().find(|piece_info| piece_info.piece_type == Piece::King).unwrap().square,
     }; 
+
+    for piece_moves in enemy_available_moves {
+        for available_move in piece_moves.available_moves {
+            if available_move == king_coords {
+                return true;
+            }
+        }
+        for available_move in piece_moves.special_actions {
+            if available_move.new_square == king_coords {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }

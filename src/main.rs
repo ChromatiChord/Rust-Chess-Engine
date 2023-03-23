@@ -8,7 +8,7 @@ use fen::fen_construct::fen_construct;
 use fen::fen_deconstruct::fen_deconstruct;
 
 mod engine;
-use engine::engine_wrapper::evaluation_position;
+use engine::engine_wrapper::get_number_of_moves;
 
 mod piece_movement;
 // use piece_movement::piece_movement_brains::get_available_moves;
@@ -59,7 +59,7 @@ fn main() {
 
     let (depth, alpha, beta) = (1, 1, 1);
 
-    evaluation_position(&board, Some(vec![]), depth, alpha, beta, Agent::Max);
+    get_number_of_moves(&board, Some(&vec![]), depth, alpha, beta, Agent::Max);
 
 	println!("Done!")
 }
