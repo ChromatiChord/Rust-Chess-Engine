@@ -4,6 +4,7 @@ pub enum Player {
 	Black
 }
 
+#[derive(Debug, Clone, Copy)]
 pub enum Agent {
 	Max,
 	Min
@@ -16,7 +17,7 @@ pub fn switch_player(player: Player) -> Player {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Piece {
     Knight,
     Bishop,
@@ -27,7 +28,7 @@ pub enum Piece {
 }
 
 // ------------ BIG BOY BOARD STATE ------------
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct BoardState {
     pub white_pieces: Vec<PieceInfo>,
     pub black_pieces: Vec<PieceInfo>,
@@ -39,7 +40,7 @@ pub struct BoardState {
 }
 
 // stored in the board_state, where all a piece's data is
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct PieceInfo {
     pub piece_type: Piece,
     pub square: (i8, i8),
@@ -47,7 +48,7 @@ pub struct PieceInfo {
     pub owner: Player
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum SpecialAction {
     Promote,
     EnpassantGenerate,
@@ -65,7 +66,7 @@ pub struct PieceActionTrigger {
 }
 
 // when generating moves, this is the structure we use to store what we iterate through
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct AvailablePieceMoves {
     pub piece: PieceInfo,
     pub available_moves: Vec<(i8, i8)>,

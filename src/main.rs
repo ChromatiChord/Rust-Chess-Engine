@@ -15,8 +15,6 @@ mod piece_movement;
 
 use crate::config::Agent;
 
-
-
 mod evaluation;
 
 fn main() {
@@ -25,15 +23,20 @@ fn main() {
 	// let input_fen: String = read!("{}\n");
 	// let mut fen = &input_fen[..];
 
-	let budget = 5_000_000;
 
-	// let mut fen: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - e3 0 1";
-	let mut fen: &str = "8/8/8/8/8/8/8/R3K2R w K - 0 1";
+	let mut fen: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - e3 0 1";
+	// let mut fen: &str = "8/8/8/8/8/8/8/R3K2R w K - 0 1";
 
 	//strips turn info and repeat count from the FEN
 	let turn_info = &fen[fen.len() - 3..fen.len()];
 	fen = &fen[..(fen.len() - 4)];
 
+	runner(fen);
+}
+
+fn runner(fen: &str) {
+
+	let budget = 5_000_000;
 	let board = fen_deconstruct(fen);
 
 	let debug_selflist: Vec<(i8, i8)> = vec![(4, 4)];
@@ -59,7 +62,7 @@ fn main() {
 
     let (depth, alpha, beta) = (1, 1, 1);
 
-    get_number_of_moves(&board, Some(&vec![]), depth, alpha, beta, Agent::Max);
+    get_number_of_moves(&board, None, depth, alpha, beta, Agent::Max);
 
 	println!("Done!")
 }

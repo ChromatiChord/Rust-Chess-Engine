@@ -12,19 +12,19 @@ pub fn get_available_moves_from_state(board_state: &BoardState, team: Player) ->
     let mut available_moves: Vec<AvailablePieceMoves> = vec![];
     match team {
         Player::White => {
-            for piece in board_state.white_pieces {
+            for piece in &board_state.white_pieces {
                 let (generated_moves, generated_special_moves) = get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board_state.occupied_white, &board_state.occupied_black, board_state.enpassant_square, board_state.castle_rights);
                 available_moves.push(AvailablePieceMoves { 
-                    piece, 
+                    piece: *piece, 
                     available_moves: generated_moves, 
                     special_actions: generated_special_moves })
             }
         },
         Player::Black => {
-            for piece in board_state.black_pieces {
+            for piece in &board_state.black_pieces {
                 let (generated_moves, generated_special_moves) = get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board_state.occupied_white, &board_state.occupied_black, board_state.enpassant_square, board_state.castle_rights);
                 available_moves.push(AvailablePieceMoves { 
-                    piece, 
+                    piece: *piece,  
                     available_moves: generated_moves, 
                     special_actions: generated_special_moves })
             }
