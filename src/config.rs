@@ -65,12 +65,20 @@ pub struct PieceActionTrigger {
     pub special_action: SpecialAction
 }
 
+// // when generating moves, this is the structure we use to store what we iterate through
+// #[derive(Debug, Clone)]
+// pub struct AvailablePieceMoves {
+//     pub piece: PieceInfo,
+//     pub available_moves: Vec<(i8, i8)>,
+//     pub special_actions: Vec<PieceActionTrigger>
+// }
+
 // when generating moves, this is the structure we use to store what we iterate through
 #[derive(Debug, Clone)]
-pub struct AvailablePieceMoves {
+pub struct AvailablePieceMove {
     pub piece: PieceInfo,
-    pub available_moves: Vec<(i8, i8)>,
-    pub special_actions: Vec<PieceActionTrigger>
+    pub new_square: (i8, i8),
+    pub special_action: Option<SpecialAction>
 }
 
 #[derive(Debug, Clone, Copy)]

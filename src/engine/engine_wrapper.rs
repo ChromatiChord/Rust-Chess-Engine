@@ -1,11 +1,11 @@
-use crate::config::{self, PieceActionTrigger, BoardState, AvailablePieceMoves, Agent, Player, Piece, PieceInfo, SpecialAction};
+use crate::config::{self, PieceActionTrigger, BoardState, AvailablePieceMove, Agent, Player, Piece, PieceInfo, SpecialAction};
 use crate::piece_movement;
 use crate::piece_movement::piece_movement_brains::get_available_moves_from_state;
 use super::update_board::update_board_with_new_params;
 
 pub fn get_number_of_moves(
     board_state: &BoardState, 
-    available_moves: Option<&Vec<AvailablePieceMoves>>, 
+    available_moves: Option<&Vec<AvailablePieceMove>>, 
     depth: i8,  
     alpha: i16, beta: i16, 
     agent: Agent) -> i16 {
@@ -19,28 +19,28 @@ pub fn get_number_of_moves(
 
     // check if available moves is empty:
     // if so, this is the first iteration
-    let binding = get_available_moves_from_state(&board_state, board_state.active_player);
+    let binding = get_available_moves_from_state(&board_state);
     let available_moves = match available_moves {
         Some(moves) => &*moves,
         None => &binding,
     };
 
-    // println!("{:?}", available_moves);
+    println!("{:?}", available_moves);
 
     // vector for storing the results of available positions
-    let mut position_results: Vec<i16> = Vec::new();
+    // let mut position_results: Vec<i16> = Vec::new();
 
-    // for move in available moves:
-    for mv_piece in *&available_moves {
-        if !mv_piece.available_moves.is_empty() || !mv_piece.special_actions.is_empty() {
-            let all_moves_for_piece: Vec<(PieceInfo, (i8, i8), Option<SpecialAction>)> = getAllMoves(mv_piece.clone());
-            for new_move in all_moves_for_piece {
-                println!("{:?}", new_move);
-                let new_board_state = update_board_with_new_params(board_state, new_move.0, new_move.1, new_move.2);
-                // println!("{:?}", new_board_state);
-            }
-        }
-    }
+    // // for move in available moves:
+    // for mv_piece in *&available_moves {
+    //     if !mv_piece.available_moves.is_empty() || !mv_piece.special_actions.is_empty() {
+    //         let all_moves_for_piece: Vec<(PieceInfo, (i8, i8), Option<SpecialAction>)> = getAllMoves(mv_piece.clone());
+    //         for new_move in all_moves_for_piece {
+    //             println!("{:?}", new_move);
+    //             let new_board_state = update_board_with_new_params(board_state, new_move.0, new_move.1, new_move.2);
+    //             // println!("{:?}", new_board_state);
+    //         }
+    //     }
+    // }
         // create a new boardstate with the updated stuff (update_board_with_new_params())
 
     //     let enemy_player = match board_state.active_player {
@@ -77,17 +77,4 @@ pub fn get_number_of_moves(
     // // else if Agent::Max, return largest value from vector
     // position_results.iter().sum()
     1
-}
-
-fn getAllMoves(available_moves: AvailablePieceMoves) -> Vec<(PieceInfo, (i8, i8), Option<SpecialAction>)> {
-    let mut all_moves = vec![];
-    let new_piece_info = available_moves.piece;
-
-    for new_square in available_moves.available_moves {
-        all_moves.push((new_piece_info, new_square, None));
-    }
-    for special_action in available_moves.special_actions {
-        all_moves.push((new_piece_info, special_action.new_square, Some(special_action.special_action)));
-    }
-    all_moves
 }

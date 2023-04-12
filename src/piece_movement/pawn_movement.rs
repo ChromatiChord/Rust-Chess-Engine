@@ -1,19 +1,20 @@
 use crate::config;
-use config::Player;
 use config::Player::White;
 use config::Player::Black;
 
-use config::PieceActionTrigger;
-use config::SpecialAction;
+use crate::config::{AvailablePieceMove, PieceInfo, CastleRights, SpecialAction, Player};
 
-pub fn get_pawn_moves(square: (i8, i8), 
+pub fn get_pawn_moves(piece_info: PieceInfo, 
 occupied_self: Vec<(i8, i8)>, 
 occupied_enemy: Vec<(i8, i8)>, 
 enpassant_square: Option<(i8, i8)>, 
-active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceActionTrigger>) {
+active_player: Player) -> 
+Vec<AvailablePieceMove> {
     
-    let mut possible_squares: Vec<(i8, i8)> = Vec::new();
-    let mut special_possible_squares: Vec<PieceActionTrigger> = Vec::new();
+    let mut possible_squares: Vec<AvailablePieceMove> = Vec::new();
+
+    let rank = piece_info.square.0;
+    let file = piece_info.square.1;
     
     // check which rank the pawn is allowed to dash on
     let double_rank = match active_player {
@@ -27,19 +28,24 @@ active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceActionTrigger>) {
     };
     
     // check if pawn can jump 1 square ahead
-    let one_space_new_square = (square.0 + direction, square.1);
+    let one_space_new_square = (rank + direction, file);
     let mut one_ahead_occupied = true;
     if !occupied_self.contains(&one_space_new_square) && !occupied_enemy.contains(&one_space_new_square) {
-        possible_squares.push(one_space_new_square);
+        possible_squares.push(AvailablePieceMove {
+                piece: piece_info,
+                new_square: one_space_new_square,
+                special_action: None
+            });
         one_ahead_occupied = false;
     } 
     
     // check if pawn can jump 2 spaces
-    if square.0 == double_rank {
-        let two_space_new_square = (square.0 + direction * 2, square.1);
+    if rank == double_rank {
+        let two_space_new_square = (rank + direction * 2, file);
         if !occupied_self.contains(&two_space_new_square) && !occupied_enemy.contains(&two_space_new_square) {
             if !one_ahead_occupied {
-                special_possible_squares.push(PieceActionTrigger {
+                possible_squares.push(AvailablePieceMove {
+                    piece: piece_info,
                     new_square: two_space_new_square,
                     special_action: SpecialAction::EnpassantGenerate
                 });
@@ -48,15 +54,17 @@ active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceActionTrigger>) {
     }
 
     // diagonal capture check
-    if occupied_enemy.contains(&(square.0 + direction, square.1 + 1)) {
-        special_possible_squares.push(PieceActionTrigger {
-            new_square: (square.0 + direction, square.1 + 1),
+    if occupied_enemy.contains(&(rank + direction, file + 1)) {
+        possible_squares.push(AvailablePieceMove {
+            piece: piece_info,
+            new_square: (rank + direction, file + 1),
             special_action: SpecialAction::Capture
         });
     }
-    if occupied_enemy.contains(&(square.0 + direction, square.1 - 1)) {
-        special_possible_squares.push(PieceActionTrigger {
-            new_square: (square.0 + direction, square.1 - 1),
+    if occupied_enemy.contains(&(rank + direction, file - 1)) {
+        possible_squares.push(AvailablePieceMove {
+            piece: piece_info,
+            new_square: (rank + direction, file - 1),
             special_action: SpecialAction::Capture
         });
     }
@@ -64,21 +72,22 @@ active_player: Player) -> (Vec<(i8, i8)>, Vec<PieceActionTrigger>) {
     // en passant check
     match enpassant_square {
         Some(en_square) => {
-            if en_square ==  (square.0 + direction, square.1 + 1) {
-                special_possible_squares.push(PieceActionTrigger {
-                    new_square: (square.0 + direction, square.1 + 1),
+            if en_square ==  (rank + direction, file + 1) {
+                possible_squares.push(AvailablePieceMove {
+                    piece: piece_info,
+                    new_square: (rank + direction, file + 1),
                     special_action: SpecialAction::EnpassantAttack
                 });
             }
-            else if en_square ==  (square.0 + direction, square.1 - 1)  {
-                special_possible_squares.push(PieceActionTrigger {
-                    new_square: (square.0 + direction, square.1 - 1),
+            else if en_square ==  (rank + direction, file - 1)  {
+                possible_squares.push(AvailablePieceMove {
+                    piece: piece_info,
+                    new_square: (rank + direction, file - 1),
                     special_action: SpecialAction::EnpassantAttack
                 });
             }
         },
         None => ()
     }
-    
-    (possible_squares, special_possible_squares)
+    possible_squares
 }
