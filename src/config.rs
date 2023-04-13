@@ -39,14 +39,6 @@ pub struct BoardState {
     pub enpassant_square: Option<(i8, i8)>,
 }
 
-impl BoardState {
-    pub fn add_enpassant_square(&self, square: (i8, i8)) -> BoardState {
-        let mut new_board_state = self.clone();
-        new_board_state.enpassant_square = Some(square);
-        new_board_state
-    }
-}
-
 // stored in the board_state, where all a piece's data is
 #[derive(Debug, Clone, Copy)]
 pub struct PieceInfo {
@@ -58,6 +50,7 @@ pub struct PieceInfo {
 
 #[derive(Debug, Clone, Copy)]
 pub enum SpecialAction {
+    Promote,
     EnpassantGenerate,
     EnpassantAttack,
     CastleShort,

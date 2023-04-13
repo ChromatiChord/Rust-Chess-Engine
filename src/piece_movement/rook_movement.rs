@@ -14,6 +14,14 @@ Vec<AvailablePieceMove> {
     
     let mut possible_squares: Vec<AvailablePieceMove> = Vec::new();
 
+    let castle_action = match (piece_info.square.0, piece_info.square.1) {
+        (0, 0) => vec![SpecialAction::DisableCastleLong],
+        (0, 7) => vec![SpecialAction::DisableCastleShort],
+        (7, 0) => vec![SpecialAction::DisableCastleLong],
+        (7, 7) => vec![SpecialAction::DisableCastleShort],
+        _ => vec![]
+    };
+
     for movement in rook_movement {
         let mut rank = piece_info.square.0;
         let mut file = piece_info.square.1;
@@ -30,17 +38,18 @@ Vec<AvailablePieceMove> {
             if out_of_bounds(rank, file) || occupied_self.contains(&coordinates) {
                 stop = true;
             } else if occupied_enemy.contains(&coordinates) {
+                castle_action.push(SpecialAction::Capture);
                 possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: coordinates,
-                    special_action: Some(vec![SpecialAction::Capture])
+                    special_action: Some(castle_action)
                 });
                 stop = true;
             } else {
                 possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: coordinates,
-                    special_action: Some(vec![SpecialAction::DisableCastleShort])
+                    special_action: Some(castle_action)
                 });
             }
 
