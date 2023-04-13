@@ -1,4 +1,4 @@
-use crate::config::{self, PieceActionTrigger, SpecialAction, AvailablePieceMove, PieceInfo};
+use crate::config::{self, SpecialAction, AvailablePieceMove, PieceInfo};
 
 use super::out_of_bounds::out_of_bounds;
 
@@ -31,7 +31,7 @@ Vec<AvailablePieceMove> {
                 possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: coordinates,
-                    special_action: Some(SpecialAction::Capture)
+                    special_action: Some(vec![SpecialAction::Capture])
                 });
                 stop = true;
             } else {

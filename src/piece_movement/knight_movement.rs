@@ -29,7 +29,7 @@ Vec<AvailablePieceMove> {
             possible_squares.push(AvailablePieceMove {
                 piece: *piece_info,
                 new_square: coordinates,
-                special_action: Some(SpecialAction::Capture)
+                special_action: Some(vec![SpecialAction::Capture])
             });
         } else {
             possible_squares.push(AvailablePieceMove {

@@ -1,4 +1,4 @@
-use crate::config::{self, PieceActionTrigger, BoardState, AvailablePieceMove, Agent, Player, Piece, PieceInfo, SpecialAction};
+use crate::config::{self, BoardState, AvailablePieceMove, Agent, Player, Piece, PieceInfo, SpecialAction};
 use crate::piece_movement;
 use crate::piece_movement::piece_movement_brains::get_available_moves_from_state;
 use super::update_board::update_board_with_new_params;

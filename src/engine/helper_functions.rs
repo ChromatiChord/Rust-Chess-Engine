@@ -1,4 +1,4 @@
-use crate::config::{self, PieceActionTrigger, BoardState, AvailablePieceMove, Agent, Player, Piece, PieceInfo, SpecialAction};
+use crate::config::{self, BoardState, AvailablePieceMove, Agent, Player, Piece, PieceInfo, SpecialAction};
 
 // check if king is in check
 pub fn is_king_in_check(board_state: &BoardState, enemy_available_moves: &Vec<AvailablePieceMove>) -> bool {

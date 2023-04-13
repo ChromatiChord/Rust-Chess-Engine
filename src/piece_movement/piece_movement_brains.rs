@@ -1,4 +1,4 @@
-use crate::config::{self, SpecialAction, Player, Piece, CastleRights, PieceActionTrigger, BoardState, AvailablePieceMove, PieceInfo};
+use crate::config::{self, SpecialAction, Player, Piece, CastleRights, BoardState, AvailablePieceMove, PieceInfo};
 
 use super::rook_movement::get_rook_moves;
 use super::knight_movement::get_knight_moves;

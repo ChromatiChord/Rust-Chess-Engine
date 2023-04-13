@@ -30,7 +30,7 @@ Vec<AvailablePieceMove> {
             possible_squares.push(AvailablePieceMove {
                 piece: *piece_info,
                 new_square: coordinates,
-                special_action: Some(SpecialAction::Capture)
+                special_action: Some(vec![SpecialAction::Capture])
             });
         } else {
             possible_squares.push(AvailablePieceMove {
@@ -47,14 +47,14 @@ Vec<AvailablePieceMove> {
                 possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: (7, 6),
-                    special_action: Some(SpecialAction::CastleShort)
+                    special_action: Some(vec![SpecialAction::CastleShort])
                 });
             }
             if castle_rights.white_long == true {
                 possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: (7, 2),
-                    special_action: Some(SpecialAction::CastleLong)
+                    special_action: Some(vec![SpecialAction::CastleLong])
                 });
             }
         },
@@ -63,14 +63,14 @@ Vec<AvailablePieceMove> {
                     possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: (0, 6),
-                    special_action: Some(SpecialAction::CastleShort)
+                    special_action: Some(vec![SpecialAction::CastleShort])
                 });
             }
             if castle_rights.black_long == true {
                     possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: (0, 2),
-                    special_action: Some(SpecialAction::CastleLong)
+                    special_action: Some(vec![SpecialAction::CastleLong])
                 });
             }
         }

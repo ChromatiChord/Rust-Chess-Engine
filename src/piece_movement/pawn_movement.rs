@@ -47,7 +47,7 @@ Vec<AvailablePieceMove> {
                 possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: two_space_new_square,
-                    special_action: Some(SpecialAction::EnpassantGenerate)
+                    special_action: Some(vec![SpecialAction::EnpassantGenerate])
                 });
             }
         }
@@ -58,14 +58,14 @@ Vec<AvailablePieceMove> {
         possible_squares.push(AvailablePieceMove {
             piece: *piece_info,
             new_square: (rank + direction, file + 1),
-            special_action: Some(SpecialAction::Capture)
+            special_action: Some(vec![SpecialAction::Capture])
         });
     }
     if occupied_enemy.contains(&(rank + direction, file - 1)) {
         possible_squares.push(AvailablePieceMove {
             piece: *piece_info,
             new_square: (rank + direction, file - 1),
-            special_action: Some(SpecialAction::Capture)
+            special_action: Some(vec![SpecialAction::Capture])
         });
     }
 
@@ -76,14 +76,14 @@ Vec<AvailablePieceMove> {
                 possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: (rank + direction, file + 1),
-                    special_action: Some(SpecialAction::EnpassantAttack)
+                    special_action: Some(vec![SpecialAction::EnpassantAttack])
                 });
             }
             else if en_square ==  (rank + direction, file - 1)  {
                 possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: (rank + direction, file - 1),
-                    special_action: Some(SpecialAction::EnpassantAttack)
+                    special_action: Some(vec![SpecialAction::EnpassantAttack])
                 });
             }
         },
