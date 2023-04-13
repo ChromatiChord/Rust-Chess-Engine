@@ -25,8 +25,11 @@ pub fn get_number_of_moves(
         None => &binding,
     };
 
-    println!("{:?}", available_moves);
+    for mv in available_moves {
+        println!("{:?}", mv);
+    }
 
+    println!("{:?}", available_moves.len());
     // vector for storing the results of available positions
     // let mut position_results: Vec<i16> = Vec::new();
 

@@ -2,7 +2,7 @@ use super::out_of_bounds::out_of_bounds;
 
 use crate::config::{self, AvailablePieceMove, PieceInfo, CastleRights, SpecialAction, Player};
 
-pub fn get_king_moves(piece_info: PieceInfo, occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>, castle_rights: CastleRights, team: Player) -> 
+pub fn get_king_moves(piece_info: &PieceInfo, occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>, castle_rights: CastleRights, team: Player) -> 
 Vec<AvailablePieceMove> {
     
     let king_movement: Vec<(i8, i8)> = vec![
@@ -28,13 +28,13 @@ Vec<AvailablePieceMove> {
             continue;
         } else if occupied_enemy.contains(&coordinates) {
             possible_squares.push(AvailablePieceMove {
-                piece: piece_info,
+                piece: *piece_info,
                 new_square: coordinates,
                 special_action: Some(SpecialAction::Capture)
             });
         } else {
             possible_squares.push(AvailablePieceMove {
-                piece: piece_info,
+                piece: *piece_info,
                 new_square: coordinates,
                 special_action: None
             });
@@ -45,14 +45,14 @@ Vec<AvailablePieceMove> {
         Player::White => {
             if castle_rights.white_short == true {
                 possible_squares.push(AvailablePieceMove {
-                    piece: piece_info,
+                    piece: *piece_info,
                     new_square: (7, 6),
                     special_action: Some(SpecialAction::CastleShort)
                 });
             }
             if castle_rights.white_long == true {
                 possible_squares.push(AvailablePieceMove {
-                    piece: piece_info,
+                    piece: *piece_info,
                     new_square: (7, 2),
                     special_action: Some(SpecialAction::CastleLong)
                 });
@@ -61,14 +61,14 @@ Vec<AvailablePieceMove> {
         Player::Black => {
             if castle_rights.black_short == true {
                     possible_squares.push(AvailablePieceMove {
-                    piece: piece_info,
+                    piece: *piece_info,
                     new_square: (0, 6),
                     special_action: Some(SpecialAction::CastleShort)
                 });
             }
             if castle_rights.black_long == true {
                     possible_squares.push(AvailablePieceMove {
-                    piece: piece_info,
+                    piece: *piece_info,
                     new_square: (0, 2),
                     special_action: Some(SpecialAction::CastleLong)
                 });

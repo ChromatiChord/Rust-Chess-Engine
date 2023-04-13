@@ -1,7 +1,7 @@
 use crate::config::{self, SpecialAction, AvailablePieceMove, PieceInfo};
 use super::out_of_bounds::out_of_bounds;
 
-pub fn get_knight_moves(piece_info: PieceInfo, occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) -> 
+pub fn get_knight_moves(piece_info: &PieceInfo, occupied_self: Vec<(i8, i8)>, occupied_enemy: Vec<(i8, i8)>) -> 
 Vec<AvailablePieceMove> {
 
     let knight_movement: Vec<(i8, i8)> = vec![
@@ -27,13 +27,13 @@ Vec<AvailablePieceMove> {
             continue;
         } else if occupied_enemy.contains(&coordinates) {
             possible_squares.push(AvailablePieceMove {
-                piece: piece_info,
+                piece: *piece_info,
                 new_square: coordinates,
                 special_action: Some(SpecialAction::Capture)
             });
         } else {
             possible_squares.push(AvailablePieceMove {
-                piece: piece_info,
+                piece: *piece_info,
                 new_square: coordinates,
                 special_action: None
             });

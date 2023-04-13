@@ -4,7 +4,7 @@ use config::Player::Black;
 
 use crate::config::{AvailablePieceMove, PieceInfo, CastleRights, SpecialAction, Player};
 
-pub fn get_pawn_moves(piece_info: PieceInfo, 
+pub fn get_pawn_moves(piece_info: &PieceInfo, 
 occupied_self: Vec<(i8, i8)>, 
 occupied_enemy: Vec<(i8, i8)>, 
 enpassant_square: Option<(i8, i8)>, 
@@ -32,7 +32,7 @@ Vec<AvailablePieceMove> {
     let mut one_ahead_occupied = true;
     if !occupied_self.contains(&one_space_new_square) && !occupied_enemy.contains(&one_space_new_square) {
         possible_squares.push(AvailablePieceMove {
-                piece: piece_info,
+                piece: *piece_info,
                 new_square: one_space_new_square,
                 special_action: None
             });
@@ -45,9 +45,9 @@ Vec<AvailablePieceMove> {
         if !occupied_self.contains(&two_space_new_square) && !occupied_enemy.contains(&two_space_new_square) {
             if !one_ahead_occupied {
                 possible_squares.push(AvailablePieceMove {
-                    piece: piece_info,
+                    piece: *piece_info,
                     new_square: two_space_new_square,
-                    special_action: SpecialAction::EnpassantGenerate
+                    special_action: Some(SpecialAction::EnpassantGenerate)
                 });
             }
         }
@@ -56,16 +56,16 @@ Vec<AvailablePieceMove> {
     // diagonal capture check
     if occupied_enemy.contains(&(rank + direction, file + 1)) {
         possible_squares.push(AvailablePieceMove {
-            piece: piece_info,
+            piece: *piece_info,
             new_square: (rank + direction, file + 1),
-            special_action: SpecialAction::Capture
+            special_action: Some(SpecialAction::Capture)
         });
     }
     if occupied_enemy.contains(&(rank + direction, file - 1)) {
         possible_squares.push(AvailablePieceMove {
-            piece: piece_info,
+            piece: *piece_info,
             new_square: (rank + direction, file - 1),
-            special_action: SpecialAction::Capture
+            special_action: Some(SpecialAction::Capture)
         });
     }
 
@@ -74,16 +74,16 @@ Vec<AvailablePieceMove> {
         Some(en_square) => {
             if en_square ==  (rank + direction, file + 1) {
                 possible_squares.push(AvailablePieceMove {
-                    piece: piece_info,
+                    piece: *piece_info,
                     new_square: (rank + direction, file + 1),
-                    special_action: SpecialAction::EnpassantAttack
+                    special_action: Some(SpecialAction::EnpassantAttack)
                 });
             }
             else if en_square ==  (rank + direction, file - 1)  {
                 possible_squares.push(AvailablePieceMove {
-                    piece: piece_info,
+                    piece: *piece_info,
                     new_square: (rank + direction, file - 1),
-                    special_action: SpecialAction::EnpassantAttack
+                    special_action: Some(SpecialAction::EnpassantAttack)
                 });
             }
         },

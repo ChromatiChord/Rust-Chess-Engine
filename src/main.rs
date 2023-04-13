@@ -24,7 +24,7 @@ fn main() {
 	// let mut fen = &input_fen[..];
 
 
-	let mut fen: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - e3 0 1";
+	let mut fen: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1";
 	// let mut fen: &str = "8/8/8/8/8/8/8/R3K2R w K - 0 1";
 
 	//strips turn info and repeat count from the FEN

@@ -13,12 +13,12 @@ pub fn get_available_moves_from_state(board_state: &BoardState) -> Vec<Available
     match board_state.active_player {
         Player::White => {
             for piece in &board_state.white_pieces {
-                available_moves.append(get_available_moves(&piece, &board_state.occupied_white, &board_state.occupied_black, board_state.enpassant_square, board_state.castle_rights));
+                available_moves.append(&mut get_available_moves(&piece, &board_state));
             }
         },
         Player::Black => {
             for piece in &board_state.black_pieces {
-                available_moves.append(get_available_moves(&piece, &board_state.occupied_white, &board_state.occupied_black, board_state.enpassant_square, board_state.castle_rights));
+                available_moves.append(&mut get_available_moves(&piece, &board_state));
             }
         }
     }
@@ -27,28 +27,24 @@ pub fn get_available_moves_from_state(board_state: &BoardState) -> Vec<Available
 
 fn get_available_moves(
     piece: &PieceInfo,
-    occupied_white: &Vec<(i8, i8)>, 
-    occupied_black: &Vec<(i8, i8)>, 
-    enpassant_square: Option<(i8, i8)>,
-    castle_rights: CastleRights) -> Vec<AvailablePieceMove> {
+    board_state: &BoardState) -> Vec<AvailablePieceMove> {
         let occupied_self = match board_state.active_player {
-            Player::White => occupied_white.clone(),
-            Player::Black => occupied_black.clone()
+            Player::White => board_state.occupied_white.clone(),
+            Player::Black => board_state.occupied_black.clone()
         };
         let occupied_enemy = match board_state.active_player {
-            Player::White => occupied_black.clone(),
-            Player::Black => occupied_white.clone()
+            Player::White => board_state.occupied_black.clone(),
+            Player::Black => board_state.occupied_white.clone()
         };
         
-        let available_moves = match piece.piece_type {
+        let mut available_moves = match piece.piece_type {
             Piece::Rook => get_rook_moves(piece, occupied_self, occupied_enemy),
             Piece::Knight => get_knight_moves(piece, occupied_self, occupied_enemy),
             Piece::Bishop => get_bishop_moves(piece, occupied_self, occupied_enemy),
             Piece::Queen => get_queen_moves(piece, occupied_self, occupied_enemy),
-            Piece::King => get_king_moves(piece, occupied_self, occupied_enemy, castle_rights, board_state.active_player),
-            Piece::Pawn => get_pawn_moves(piece, occupied_self, occupied_enemy, enpassant_square, board_state.active_player),
+            Piece::King => get_king_moves(piece, occupied_self, occupied_enemy, board_state.castle_rights, board_state.active_player),
+            Piece::Pawn => get_pawn_moves(piece, occupied_self, occupied_enemy, board_state.enpassant_square, board_state.active_player),
             _ => panic!("Inputted piece is not a real piece!")
         };
         available_moves
-        // let mut special_possible_squares: Vec<AvailablePieceMove> = Vec::new();
 }
