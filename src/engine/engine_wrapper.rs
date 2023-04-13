@@ -25,26 +25,11 @@ pub fn get_number_of_moves(
         None => &binding,
     };
 
-    for mv in available_moves {
-        println!("{:?}", mv);
-    }
-
     println!("{:?}", available_moves.len());
-    // vector for storing the results of available positions
-    // let mut position_results: Vec<i16> = Vec::new();
 
-    // // for move in available moves:
-    // for mv_piece in *&available_moves {
-    //     if !mv_piece.available_moves.is_empty() || !mv_piece.special_actions.is_empty() {
-    //         let all_moves_for_piece: Vec<(PieceInfo, (i8, i8), Option<SpecialAction>)> = getAllMoves(mv_piece.clone());
-    //         for new_move in all_moves_for_piece {
-    //             println!("{:?}", new_move);
-    //             let new_board_state = update_board_with_new_params(board_state, new_move.0, new_move.1, new_move.2);
-    //             // println!("{:?}", new_board_state);
-    //         }
-    //     }
-    // }
-        // create a new boardstate with the updated stuff (update_board_with_new_params())
+    for new_move in available_moves {
+        let new_board_state = update_board_with_new_params(board_state, new_move);
+    }
 
     //     let enemy_player = match board_state.active_player {
     //         Player::White => Player::Black,

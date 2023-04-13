@@ -1,6 +1,7 @@
 #![allow(dead_code, unused)]
 
-// use text_io::read;
+use text_io::read;
+use regex::Regex;
 mod config;
 
 mod fen;
@@ -18,51 +19,36 @@ use crate::config::Agent;
 mod evaluation;
 
 fn main() {
-	// User FEN input
-	// print!("Enter an fen: ");
-	// let input_fen: String = read!("{}\n");
-	// let mut fen = &input_fen[..];
+	let debug = true;
+	let mut input_fen = "";
 
-
-	let mut fen: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1";
-	// let mut fen: &str = "8/8/8/8/8/8/8/R3K2R w K - 0 1";
-
+	if debug {
+		input_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1";
+	} else {
+		// User FEN input
+		print!("Enter an fen: ");
+		let input_fen: String = read!("{}\n");
+	}
+	
+	let mut fen: &str = &input_fen[..];
+    if !is_valid_fen(input_fen) {
+        panic!("Input is not a valid FEN!");
+    }
 	//strips turn info and repeat count from the FEN
 	let turn_info = &fen[fen.len() - 3..fen.len()];
 	fen = &fen[..(fen.len() - 4)];
 
-	runner(fen);
-}
-
-fn runner(fen: &str) {
-
-	let budget = 5_000_000;
+	let budget = 3;
 	let board = fen_deconstruct(fen);
 
-	let debug_selflist: Vec<(i8, i8)> = vec![(4, 4)];
-	let debug_enemylist: Vec<(i8, i8)> = vec![(2, 0)];
-	
-	// for i in 1..1_0{
-	// }
-	
-	//  args: ( piece, player, piece_coords, occ_white, occ_black, enpassant_square, castle_rights )
-	// for piece in &board.white_pieces {
-	// 	let (available_moves, special_moves) = get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, board.enpassant_square, board.castle_rights);
-	// 	println!("{:?} {:?}: {:?} {:?}", piece.owner, piece.piece_type, available_moves, special_moves);
-	// }
-	// for piece in &board.black_pieces {
-	// 	let (available_moves, special_moves) = get_available_moves(&piece.piece_type, &piece.owner, &piece.square, &board.occupied_white, &board.occupied_black, board.enpassant_square, board.castle_rights);
-	// 	println!("{:?} {:?} {:?}: {:?} {:?}", piece.owner, piece.piece_type, piece.square, available_moves, special_moves);
-	// }
+	let (depth, alpha, beta) = (3, 1, 1);
 
-	// println!("{:?} {:?}: {:?}", config::Player::White, config::Piece::Rook, get_available_moves(&config::Piece::Rook, &config::Player::White, &(1,2), &debug_selflist, &debug_enemylist, Some((8, 8))));
+	let num_moves = get_number_of_moves(&board, None, depth, alpha, beta, Agent::Max);
+    println!("{:?} moves at depth {:?}", num_moves, depth);
+	println!("Done!");
+}
 
-	// let squares = get_available_moves(config::Piece::Knight, config::Player::White, (1,2), debug_selflist, debug_enemylist, (8, 8));
-
-
-    let (depth, alpha, beta) = (1, 1, 1);
-
-    get_number_of_moves(&board, None, depth, alpha, beta, Agent::Max);
-
-	println!("Done!")
+fn is_valid_fen(fen: &str) -> bool {
+	let fen_regex = Regex::new(r"^([rnbqkpRNBQKP1-8]+/){7}([rnbqkpRNBQKP1-8]+) (w|b) ((K?Q?k?q?|-) (-|[abcdefgh][36]) \d+ \d+)$").unwrap();
+	fen_regex.is_match(fen)
 }
