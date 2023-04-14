@@ -28,7 +28,7 @@ pub fn get_number_of_moves(
     println!("{:?}", available_moves.len());
 
     for new_move in available_moves {
-        let new_board_state = update_board_with_new_params(board_state, new_move);
+        let new_board_state = update_board_with_new_params(board_state, new_move.clone());
     }
 
     //     let enemy_player = match board_state.active_player {

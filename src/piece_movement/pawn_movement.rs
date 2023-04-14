@@ -27,7 +27,7 @@ Vec<AvailablePieceMove> {
         Black => 1
     };
 
-    let mut special_action_var = if rank == (double_rank - direction) {
+    let mut castle_action = if rank == (double_rank - direction) {
         vec![SpecialAction::Promote]
     } else {
         vec![]
@@ -40,7 +40,7 @@ Vec<AvailablePieceMove> {
         possible_squares.push(AvailablePieceMove {
                 piece: *piece_info,
                 new_square: one_space_new_square,
-                special_action: Some(special_action_var)
+                special_action: Some(castle_action.clone())
             });
         one_ahead_occupied = false;
     } 
@@ -61,19 +61,17 @@ Vec<AvailablePieceMove> {
 
     // diagonal capture check
     if occupied_enemy.contains(&(rank + direction, file + 1)) {
-        special_action_var.push(SpecialAction::Capture);
         possible_squares.push(AvailablePieceMove {
             piece: *piece_info,
             new_square: (rank + direction, file + 1),
-            special_action: Some(special_action_var)
+            special_action: Some([&castle_action[..], &[SpecialAction::Capture]].concat())
         });
     }
     if occupied_enemy.contains(&(rank + direction, file - 1)) {
-        special_action_var.push(SpecialAction::Capture);
         possible_squares.push(AvailablePieceMove {
             piece: *piece_info,
             new_square: (rank + direction, file - 1),
-            special_action: Some(special_action_var)
+            special_action: Some([&castle_action[..], &[SpecialAction::Capture]].concat())
         });
     }
 
