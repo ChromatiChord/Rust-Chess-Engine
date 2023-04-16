@@ -43,14 +43,14 @@ Vec<AvailablePieceMove> {
 
     match team {
         Player::White => {
-            if castle_rights.white_short == true {
+            if castle_rights.white_short == true && check_castle_path_free(&occupied_self, &occupied_enemy, team, "short") {
                 possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: (7, 6),
                     special_action: Some(vec![SpecialAction::CastleShort])
                 });
             }
-            if castle_rights.white_long == true {
+            if castle_rights.white_long == true && check_castle_path_free(&occupied_self, &occupied_enemy, team, "long") {
                 possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: (7, 2),
@@ -59,14 +59,14 @@ Vec<AvailablePieceMove> {
             }
         },
         Player::Black => {
-            if castle_rights.black_short == true {
+            if castle_rights.black_short == true && check_castle_path_free(&occupied_self, &occupied_enemy, team, "short") {
                     possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: (0, 6),
                     special_action: Some(vec![SpecialAction::CastleShort])
                 });
             }
-            if castle_rights.black_long == true {
+            if castle_rights.black_long == true && check_castle_path_free(&occupied_self, &occupied_enemy, team, "long") {
                     possible_squares.push(AvailablePieceMove {
                     piece: *piece_info,
                     new_square: (0, 2),
@@ -77,4 +77,36 @@ Vec<AvailablePieceMove> {
     }
 
     possible_squares
+}
+
+fn check_castle_path_free(occupied_self: &Vec<(i8, i8)>, occupied_enemy: &Vec<(i8, i8)>, team: Player, direction: & str) -> bool {
+    if direction == "short" {
+        match Player::White {
+            Player::White => {
+                if occupied_self.contains(&(7, 5)) || occupied_self.contains(&(7, 6)) || occupied_enemy.contains(&(7, 5)) || occupied_enemy.contains(&(7, 6)) {
+                    return false;
+                }
+            },
+            Player::Black => {
+                if occupied_self.contains(&(0, 5)) || occupied_self.contains(&(0, 6)) || occupied_enemy.contains(&(0, 5)) || occupied_enemy.contains(&(0, 6)) {
+                    return false;
+                }
+            }
+        }
+    } else if direction == "long" {
+        match Player::White {
+            Player::White => {
+                if occupied_self.contains(&(7, 3)) || occupied_self.contains(&(7, 2)) || occupied_enemy.contains(&(7, 3)) || occupied_enemy.contains(&(7, 2)) {
+                    return false;
+                }
+            },
+            Player::Black => {
+                if occupied_self.contains(&(0, 3)) || occupied_self.contains(&(0, 2)) || occupied_enemy.contains(&(0, 3)) || occupied_enemy.contains(&(0, 2)) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }

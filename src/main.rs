@@ -41,7 +41,7 @@ fn main() {
     let budget = 3;
     let board = fen_deconstruct(fen);
 
-    let (depth, alpha, beta) = (3, 1, 1);
+    let (depth, alpha, beta) = (2, 1, 1);
 
     let num_moves = get_number_of_moves(&board, None, depth, alpha, beta, Agent::Max);
     println!("{:?} moves at depth {:?}", num_moves, depth);

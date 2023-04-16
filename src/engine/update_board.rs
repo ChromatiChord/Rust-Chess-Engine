@@ -14,26 +14,73 @@ pub fn update_board_with_new_params(
             for action in special_actions {
                 match action {
                     SpecialAction::EnpassantGenerate => {
-                        // add enpassant square
+                        // add enpassant square ✓
+                        let en_square = get_enpassant_attack_square(&board_state.active_player, new_move.new_square);
+                        new_board_state.enpassant_square = Some(en_square);
                     },
                     SpecialAction::EnpassantAttack => {
-                        // remove enpassant square, remove piece in enemy list from correct square
+                        // remove enpassant square, remove piece in enemy list from correct square ✓
                         new_board_state.enpassant_square = None;
-                        new_board_state = remove_piece_at_square_side_agnostic(new_board_state, get_enpassant_attack_square(&board_state.active_player, new_move.new_square));
+                        new_board_state = remove_piece_at_square_side_agnostic(new_board_state.clone(), get_enpassant_attack_square(&board_state.active_player, new_move.new_square));
 
                     },
                     SpecialAction::CastleShort => {
                         // remove piece at correct square, add rook to correct square (short)
+                        match new_board_state.active_player {
+                            Player::White => {
+                                // change rook square at 7, 7 to 7, 5
+                                new_board_state = remove_piece_at_square(new_board_state.clone(), (7, 7), Player::White, false);
+                                new_board_state.white_pieces.push(PieceInfo {
+                                    square: (7, 5),
+                                    piece_type: Piece::Rook,
+                                    piece_value: 5,
+                                    owner: Player::White,
+                                });
+                            }
+                            Player::Black => {
+                                // change rook square at 0, 7 to 0, 5
+                                new_board_state = remove_piece_at_square(new_board_state.clone(), (0, 7), Player::Black, false);
+                                new_board_state.black_pieces.push(PieceInfo {
+                                    square: (0, 5),
+                                    piece_type: Piece::Rook,
+                                    piece_value: 5,
+                                    owner: Player::Black,
+                                });
+                            }
+                        }
                     },
                     SpecialAction::CastleLong => {
                         // remove piece at correct square, add rook to correct square (long)
+                        match new_board_state.active_player {
+                            Player::White => {
+                                // change rook square at 7, 0 to 7, 3
+                                new_board_state = remove_piece_at_square(new_board_state.clone(), (7, 0), Player::White, false);
+                                new_board_state.white_pieces.push(PieceInfo {
+                                    square: (7, 3),
+                                    piece_type: Piece::Rook,
+                                    piece_value: 5,
+                                    owner: Player::White,
+                                });
+                            }
+                            Player::Black => {
+                                // change rook square at 0, 0 to 0, 3
+                                new_board_state = remove_piece_at_square(new_board_state.clone(), (0, 0), Player::Black, false);
+                                new_board_state.black_pieces.push(PieceInfo {
+                                    square: (0, 3),
+                                    piece_type: Piece::Rook,
+                                    piece_value: 5,
+                                    owner: Player::Black,
+                                });
+                            }
+                        }
                     },
                     SpecialAction::Capture => {
-                        // remove piece at newpos from eneemy list
-                        new_board_state = remove_piece_at_square(new_board_state, new_move.new_square, new_board_state.active_player, true);
+                        // remove piece at newpos from enemy list ✓
+                        new_board_state = remove_piece_at_square(new_board_state.clone(), new_move.new_square, new_board_state.active_player, true);
 
                     },
                     SpecialAction::DisableCastleLong => {
+                        // ✓
                         match new_board_state.active_player {
                             Player::White => {
                                 new_board_state.castle_rights.white_long = false;
@@ -44,6 +91,7 @@ pub fn update_board_with_new_params(
                         }
                     },
                     SpecialAction::DisableCastleShort => {
+                        // ✓
                         match new_board_state.active_player {
                             Player::White => {
                                 new_board_state.castle_rights.white_short = false;
@@ -54,6 +102,7 @@ pub fn update_board_with_new_params(
                         }
                     },
                     SpecialAction::Promote => {
+                        // ✓
                         new_move.piece.piece_type = Piece::Queen;
                     },
                     _ => (),
@@ -64,10 +113,41 @@ pub fn update_board_with_new_params(
     }
 
     // move piece to new square
-    // remove piece from old square
+    new_board_state = move_piece(new_board_state.clone(), &new_move.piece, new_move.piece.square, new_move.new_square, new_board_state.active_player, false);
+
+    // switch active player
+    new_board_state.active_player = match new_board_state.active_player {
+        Player::White => Player::Black,
+        Player::Black => Player::White,
+    };
 
     // return new board state
+    new_board_state
+}
 
+fn move_piece(mut new_board_state: BoardState, new_move_piece: &PieceInfo, old_square: (i8, i8), new_square: (i8, i8), active_player: Player, remove_enemy: bool) -> BoardState {
+    new_board_state = remove_piece_at_square(new_board_state.clone(), old_square, active_player, remove_enemy);
+    match active_player {
+        Player::White => {
+            new_board_state.white_pieces.push(PieceInfo {
+                square: new_square,
+                piece_type: new_move_piece.piece_type,
+                piece_value: new_move_piece.piece_value,
+                owner: new_move_piece.owner,
+            });
+            new_board_state.occupied_white.push(new_square);
+        },
+        Player::Black => {
+            new_board_state.black_pieces.push(PieceInfo {
+                square: new_square,
+                piece_type: new_move_piece.piece_type,
+                piece_value: new_move_piece.piece_value,
+                owner: new_move_piece.owner,
+            });
+            new_board_state.occupied_white.push(new_square);
+        },
+    }
+    
     new_board_state
 }
 
